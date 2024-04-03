@@ -4,6 +4,7 @@ import User from './models/userModel.js';
 import cors from 'cors';
 
 const app = express();
+app.use(cors()); // Add this line to enable all CORS requests
 app.use(express.json()); // for parsing application/json
 
 // Connect to MongoDB

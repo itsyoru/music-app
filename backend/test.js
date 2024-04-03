@@ -5,11 +5,11 @@ const port = 3000;
 const app = express();
 app.use(cors());
 
+const accessToken = 'BQAFhmKvDQS-xjUxXcwD8NnfRso5AKzICu_nF0n1cDiXi8gUUiz29OoTKkhvFqYaG5RYsSnRQ37hx1vZh-S54C71uZTPpaMM-8hH6-4WSv0aRSCjSHM';
+const albumIds = ['79dL7FLiJFOO0EoehUHQBv', '0tpIUAzCeUkoV4u2r5NrQr', '6tG8sCK4htJOLjlWwb7gZB', '3mH6qwIy9crq0I9YQbOuDf', '1VCTWaze9kuY5IDlbtR5p0', '7wJTn94PWzZ3zE0lg3qhld']; // replace with your actual album IDs
 
-const accessToken = 'BQABxX-jb8_Jcl9vBelocQSfr05l0xuMBUtd_Gh0KynDWZz22kD9IAJbwQMBrNt0aUPCuTlxrHyxUS79GafMEnoEOMfPnZK54w1qGWHnbVWFIEiyb1E'; // Replace with your actual access token
-const albumId = '4UVERYsIzs6xbDYO8srlqd'; // Replace with the actual album ID
-
-app.get('/album', (req, res) => {
+app.get('/albums', (req, res) => {
+  Promise.all(albumIds.map(albumId => 
     axios({
       method: 'get',
       url: `https://api.spotify.com/v1/albums/${albumId}`,
@@ -17,21 +17,24 @@ app.get('/album', (req, res) => {
         'Authorization': `Bearer ${accessToken}`
       }
     })
-    .then(response => {
+  ))
+  .then(responses => {
+    const formattedData = responses.map(response => {
       const albumData = response.data;
-      const formattedData = {
+      return {
         name: albumData.name,
         artists: albumData.artists.map(artist => artist.name),
         release_date: albumData.release_date,
         tracks: albumData.tracks.items.map(track => track.name),
-        cover_art: albumData.images[0].url // Add this line
+        cover_art: albumData.images[0].url
       };
-      res.send(formattedData);
-    })
-    .catch(error => {
-      res.status(500).send(error.toString());
     });
+    res.send(formattedData);
+  })
+  .catch(error => {
+    res.status(500).send(error.toString());
   });
+});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

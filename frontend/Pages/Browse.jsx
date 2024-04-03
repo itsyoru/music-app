@@ -22,24 +22,24 @@ const Browse = () => {
 
     return (
         <div>
-            <h1>Welcome to DEN!</h1>
-            <p style={{ fontWeight: 'bold', fontSize: '20px' }}>New Releases</p>
-            <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+            <h1>Browse...</h1>
+            <p style={{ fontWeight: 'bold', fontSize: '30px', marginTop: '60px' }}>New Releases</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'nowrap' }}>
                 {newReleases.map((release, index) => (
-                    <div key={index} style={{ margin: '10px' }}> 
+                    <div key={index} style={{ margin: '10px', width: 'calc(16.66% - 20px)', overflow: 'hidden' }}> 
                         <img src={release.cover_art} alt={release.name} className="album-cover" />
-                        <p className="album-details">{release.name}</p>
-                        <p className="album-details" style={{ marginTop: '5px' }}>{release.artists.join(', ')}</p>
+                        <p className="album-details" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{release.name}</p>
+                        <p className="album-details" style={{ marginTop: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{release.artists.join(', ')}</p>
                     </div>
                 ))}
             </div>
-            <p style={{ fontWeight: 'bold', fontSize: '20px' }}>Top 10</p>
+            <p style={{ fontWeight: 'bold', fontSize: '30px', marginTop: '20px' }}>Top 10</p>
             <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-                {top10.map((track, index) => (
-                    <div key={index} style={{ margin: '10px' }}> 
-                        <img src={track.cover_art} alt={track.name} className="album-cover" />
-                        <p className="album-details">{track.name}</p>
-                        <p className="album-details" style={{ marginTop: '5px' }}>{track.artists.join(', ')}</p>
+                {top10.map((release, index) => (
+                    <div key={index} style={{ margin: '10px', width: 'calc(20% - 20px)', overflow: 'hidden' }}> 
+                        <img src={release.cover_art} alt={release.name} className="album-cover" />
+                        <p className="album-details" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{release.name}</p>
+                        <p className="album-details" style={{ marginTop: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{release.artists.join(', ')}</p>
                     </div>
                 ))}
             </div>

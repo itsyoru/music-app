@@ -1,28 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import '../App.css';
+import headphones from '../assets/headphones.jpg';
 
 const Login = () => {
-  return (
-    <div>
-      <h1>Welcome to the Login Page</h1>
-      {/* Add more content here */}
-        <div>
-        <form name = "log in form" method="post" action="">
-          <label>Log In</label>
-          <br></br>
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-          <table width = "100" allign = "center">
-          <tr>
-          <input type = "text" name = "username"></input>
-          </tr>
-          <tr>
-          <input type = "password" name = "password"></input>
-          </tr>
-          <input type = "submit" value = "log in"></input>
-          </table>
-          </form>
+  const onSubmit = (event) => {
+    event.preventDefault();
+    console.log('Form submitted');
+    // Add your login logic here
+  };
+
+  return (
+    <div className="register-container">
+      <div className="image-container">
+  <img src={headphones} alt="headphones" style={{width: '80%', height: 'auto'}} />
+</div>
+      <div className="form-container">
+        <h1 style={{marginBottom: '140px'}}>Log In</h1>
+        <form onSubmit={onSubmit}>
+          <div>
+            <label style={{fontSize: '24px'}}>Username:</label>
+            <input style={{width: '200px', height: '30px', fontSize: '16px'}} type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+          </div>
+          <div>
+            <label style={{fontSize: '24px'}}>Password:</label>
+            <input style={{width: '200px', height: '30px', fontSize: '16px'}} type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+          <div>
+            <input type="submit" value="Log In" />
+          </div>
+        </form>
+        <div style={{marginTop: '20px'}}>
+          <p>Don't have an account? <Link to="/register">Register here!</Link></p>
         </div>
-      
-      <h2>Don't have an Account? Register here</h2>
+      </div>
     </div>
   );
 };

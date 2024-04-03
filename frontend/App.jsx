@@ -5,6 +5,7 @@ import Browse from './Pages/Browse'
 import Login from './Pages/Login'
 import Profile from './Pages/Profile'
 import Register from './Pages/Register'
+import Parties from './Pages/Parties'
 
 const App = ()  => {
 
@@ -16,6 +17,7 @@ const App = ()  => {
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/Parties" element={<Parties />} />
       </Routes>
     </Router>
   );

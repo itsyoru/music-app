@@ -11,7 +11,8 @@ const playlistSchema = new mongoose.Schema({
     },
     tracklist: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Track'
+        ref: 'Track',  
+        required: true
     }],
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,

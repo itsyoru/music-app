@@ -5,9 +5,12 @@ const albumSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    title: {
+        type: String,
+        required: true
+    },
     date: {
         type: Date,
-        required: true
     },
     artist: {
         type: String,

@@ -13,7 +13,7 @@ const SearchBar = () => {
         <div>
             <input
                 type="text"
-                style={{ backgroundColor: 'black', marginRight: '10px' }} // Add this line to change the background color
+                style={{ backgroundColor: '#f0f3fa', marginRight: '10px', fontSize: '18px', padding: '4px' }} // Increase font size and padding
                 value={searchTerm}
                 onChange={handleSearch}
             />

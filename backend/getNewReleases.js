@@ -6,8 +6,7 @@ const port = 3001;
 const app = express();
 app.use(cors());
 
-const accessToken = 'BQDi3UNYXRAlvRzTUVySjxMbNgvg2IWrILFOjHsLQ5j6ZdKzbs2cb_3AmebwmXN_wjCqxsDB82rDlp5_9Z60VQ4VeIg1zmrK47LIj4eRm1ILdjOQU-c';
-
+const accessToken = 'BQB5rJdvSC_7J1zdr4IOatH9UQEspOj27FVwjc8ztFanMZp0GWnJ_cOfvKC8ywD7BUaYCgV9KXUNz_bzkxg2gPyVLQqVgZ5x-93z_MwGCJFOMz7arf8';
 app.get('/new-releases', (req, res) => {
     axios({
         method: 'get',
