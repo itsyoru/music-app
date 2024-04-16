@@ -8,7 +8,6 @@ const reviewSchema = new mongoose.Schema({
     },
     spotifyID: {
         type: String,
-        ref: 'Album', 
         required: true
     },
 

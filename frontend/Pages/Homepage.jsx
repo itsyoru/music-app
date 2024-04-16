@@ -19,7 +19,7 @@ function Homepage() {
   const [albums, setAlbums] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3000/albums')
+    fetch('http://localhost:3002/albums')
       .then(response => response.json())
       .then(data => setAlbums(data))
       .catch(error => console.error('Error:', error));
@@ -29,7 +29,7 @@ function Homepage() {
     <>
       <h1>DEN</h1>
       <p style={{ fontSize: '1.4em' }}>A social networking website for music lovers. </p>  
-      <div className="search-bar-container" style={{ position: 'absolute', top: 0, right: 0 }}>
+      <div className="search-bar-container" style={{ zIndex: 1 }}>
         <SearchBar />
       </div>
   
@@ -39,7 +39,7 @@ function Homepage() {
         backgroundSize: '60% auto',
         backgroundPosition: 'center',
         width: '200%',
-        height: '50vh', // adjust this to change how much of the page the image covers
+        height: '50vh', 
         position: 'relative',
         left: '-50%'
       }}>
