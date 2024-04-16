@@ -10,7 +10,7 @@ const Browse = () => {
     const [currentAlbum, setCurrentAlbum] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:3001/new-releases')
+        fetch('http://localhost:3000/new-releases')
             .then(response => response.json())
             .then(data => setNewReleases(data))
             .catch(error => console.error('Error:', error));
@@ -31,12 +31,11 @@ const Browse = () => {
         const review = {
             rating: Number(reviewForm.rating),
             comment: reviewForm.comment,
-            albumId: currentAlbum.id,
-            username: username
+            spotifyID: currentAlbum.id,
+            user: username
         };
-
         // Post the review
-        const response = await fetch('http://localhost:3001/reviews', {
+        const response = await fetch('http://localhost:5001/reviews', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -65,45 +64,51 @@ const Browse = () => {
         <div>
             <p style={{ fontWeight: 'bold', fontSize: '30px', marginTop: '60px' }}>New Releases</p>
             <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'nowrap' }}>
-                {newReleases.map((release, index) => (
-                    <div key={index} style={{ margin: '10px', width: 'calc(16.66% - 20px)', overflow: 'hidden' }}> 
-                        <img src={release.cover_art} alt={release.name} className="album-cover" onClick={() => openModal(release)} />
-                        <div>
-                            <p>{release.name}</p>
-                            <p>{release.artist}</p>
-                        </div>
-                    </div>
-                ))}
+            {newReleases.map((release, index) => (
+    <div key={index} style={{ margin: '10px', width: 'calc(16.66% - 20px)', overflow: 'hidden' }}> 
+        <img src={release.cover_art} alt={release.name} className="album-cover" onClick={() => openModal(release)} />
+        <div>
+            <p>{release.name}</p>
+            <p>{release.artists.join(', ')}</p> {/* Join the artists array into a string */}
+        </div>
+    </div>
+))}
             </div>
 
             <p style={{ fontWeight: 'bold', fontSize: '30px', marginTop: '60px' }}>Top 10</p>
 <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-    {top10.slice(0, 10).map((release, index) => (
-        <div key={index} style={{ margin: '10px', width: 'calc(20% - 20px)', overflow: 'hidden' }}> 
-            <img src={release.cover_art} alt={release.name} className="album-cover" onClick={() => openModal(release)} />
-            <div>
-                <p>{release.name}</p>
-                <p>{release.artist}</p>
-            </div>
+{top10.slice(0, 10).map((release, index) => (
+    <div key={index} style={{ margin: '10px', width: 'calc(20% - 20px)', overflow: 'hidden' }}> 
+        <img src={release.cover_art} alt={release.name} className="album-cover" onClick={() => openModal(release)} />
+        <div>
+            <p>{release.name}</p>
+            <p>{release.artists.join(', ')}</p> {/* Join the artists array into a string */}
         </div>
-    ))}
+    </div>
+))}
 </div>
 
-            <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
-                <h2>Review {currentAlbum?.name}</h2>
-                <form onSubmit={handleReviewSubmit}>
-                    <label>
-                        Rating:
-                        <input type="number" min="1" max="5" value={reviewForm.rating} onChange={e => setReviewForm({ ...reviewForm, rating: e.target.value })} required />
-                    </label>
-                    <label>
-                        Comment:
-                        <textarea value={reviewForm.comment} onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })} required />
-                    </label>
-                    <button type="submit">Submit Review</button>
-                </form>
-                <button onClick={closeModal}>Close</button>
-            </Modal>
+<Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={{ display: 'flex', justifyContent: 'space-between' }}>
+    <div>
+        <img src={currentAlbum?.cover_art} alt={currentAlbum?.name} className="album-cover" />
+        <h2>{currentAlbum?.name}</h2>
+        <p>{currentAlbum?.artists.join(', ')}</p>
+    </div>
+    <div>
+        <h2>Review {currentAlbum?.name}</h2>
+        <form onSubmit={handleReviewSubmit}>
+            <label>
+                Rating:
+                <input type="number" min="1" max="5" value={reviewForm.rating} onChange={e => setReviewForm({ ...reviewForm, rating: e.target.value })} required />
+            </label>
+            <label>
+                Comment:
+                <textarea value={reviewForm.comment} onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })} required />
+            </label>
+            <button type="submit">Submit Review</button>
+        </form>
+    </div>
+</Modal>
         </div>
     );
 };

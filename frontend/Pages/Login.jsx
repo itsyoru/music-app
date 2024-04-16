@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../App.css';
 import headphones from '../assets/headphones.jpg';
+import Navbar from '../Components/Navbar';
+import SearchBar from '../Components/SearchBar';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -39,30 +41,36 @@ const Login = () => {
   };
 
   return (
-    <div className="register-container">
-      <div className="image-container">
-        <img src={headphones} alt="headphones" style={{width: '80%', height: 'auto'}} />
+    <>
+      <Navbar />
+      <div style={{ position: 'absolute', top: 0, right: 0 }}>
+        <SearchBar />
       </div>
-      <div className="form-container">
-        <h1 style={{marginBottom: '140px'}}>Log In</h1>
-        <form onSubmit={onSubmit}>
-          <div>
-            <label style={{fontSize: '24px'}}>Username:</label>
-            <input style={{width: '200px', height: '30px', fontSize: '16px'}} type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+      <div className="register-container">
+      <div className="image-container">
+  <img src={headphones} alt="headphones" style={{width: '70%', height: 'auto', marginLeft: '10%'}} />
+</div>
+        <div className="form-container">
+          <h1 style={{marginBottom: '140px'}}>Log In</h1>
+          <form onSubmit={onSubmit}>
+            <div>
+              <label style={{fontSize: '24px'}}>Username:</label>
+              <input style={{width: '200px', height: '30px', fontSize: '16px'}} type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+            </div>
+            <div>
+              <label style={{fontSize: '24px'}}>Password:</label>
+              <input style={{width: '200px', height: '30px', fontSize: '16px'}} type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            </div>
+            <div>
+              <input type="submit" value="Log In" />
+            </div>
+          </form>
+          <div style={{marginTop: '20px'}}>
+            <p>Don't have an account? <Link to="/register">Register here!</Link></p>
           </div>
-          <div>
-            <label style={{fontSize: '24px'}}>Password:</label>
-            <input style={{width: '200px', height: '30px', fontSize: '16px'}} type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          </div>
-          <div>
-            <input type="submit" value="Log In" />
-          </div>
-        </form>
-        <div style={{marginTop: '20px'}}>
-          <p>Don't have an account? <Link to="/register">Register here!</Link></p>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

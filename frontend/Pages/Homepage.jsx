@@ -19,7 +19,7 @@ function Homepage() {
   const [albums, setAlbums] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3002/albums')
+    fetch('http://localhost:3000/albums')
       .then(response => response.json())
       .then(data => setAlbums(data))
       .catch(error => console.error('Error:', error));
