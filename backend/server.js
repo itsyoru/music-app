@@ -13,6 +13,52 @@ mongoose.connect('mongodb+srv://fkhan27:r2BPsC9bt8K49GE8@sysdesign.alwougr.mongo
     .then(() => console.log('Database connected!'))
     .catch(err => console.log('Database connection error: ' + err));
 
+    // Get a user's data
+app.get('/users/:username', async (req, res) => {
+    const { username } = req.params;
+
+    try {
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json(user);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Update a user's data
+app.put('/users/:username', async (req, res) => {
+    const { username } = req.params;
+    const { bio, email, avatar } = req.body;
+
+    try {
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.bio = bio;
+        user.email = email;
+        user.avatar = avatar;
+
+
+        await user.save();
+
+        res.json(user);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+    }
+});
+
+
+
 app.post('/reviews', async (req, res) => {
     const { user, spotifyID, rating, comment } = req.body;
 
@@ -35,6 +81,16 @@ app.post('/reviews', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(400).json({ message: err.message });
+    }
+});
+
+app.get('/reviews', async (req, res) => {
+    try {
+        const reviews = await Review.find().sort({ createdAt: -1 }).limit(5);
+        res.json(reviews);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
     }
 });
 

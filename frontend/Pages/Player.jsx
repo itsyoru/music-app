@@ -6,7 +6,4 @@ const Player = ({audioElem}) => {
         audioElem.play();
 
     }
-    return (
-
-    );
 }

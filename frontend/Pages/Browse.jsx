@@ -1,6 +1,7 @@
 import '../App.css';
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
+import SearchBar from '../Components/SearchBar';
 
 const Browse = () => {
     const [newReleases, setNewReleases] = useState([]);
@@ -8,6 +9,15 @@ const Browse = () => {
     const [reviewForm, setReviewForm] = useState({ rating: '', comment: '' });
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [currentAlbum, setCurrentAlbum] = useState(null);
+    const [tracklist, setTracklist] = useState([]);
+    const [kanyeAlbums, setKanyeAlbums] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:3000/artist-albums')
+            .then(response => response.json())
+            .then(data => setKanyeAlbums(data))
+            .catch(error => console.error('Error:', error));
+    }, []);
 
     useEffect(() => {
         fetch('http://localhost:3000/new-releases')
@@ -34,7 +44,7 @@ const Browse = () => {
             spotifyID: currentAlbum.id,
             user: username
         };
-        // Post the review
+
         const response = await fetch('http://localhost:5001/reviews', {
             method: 'POST',
             headers: {
@@ -54,14 +64,25 @@ const Browse = () => {
     const openModal = (album) => {
         setCurrentAlbum(album);
         setModalIsOpen(true);
+    
+        if (album.album_type === "album") {
+            fetch(`http://localhost:3000/albums/${album.id}/tracks`)
+                .then(response => response.json())
+                .then(data => setTracklist(data))
+                .catch(error => console.error('Error:', error));
+        }
     };
 
     const closeModal = () => {
         setModalIsOpen(false);
+        setCurrentAlbum(null);
+        setTracklist([]);
     };
 
     return (
         <div>
+
+<SearchBar />
             <p style={{ fontWeight: 'bold', fontSize: '30px', marginTop: '60px' }}>New Releases</p>
             <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'nowrap' }}>
             {newReleases.map((release, index) => (
@@ -69,7 +90,7 @@ const Browse = () => {
         <img src={release.cover_art} alt={release.name} className="album-cover" onClick={() => openModal(release)} />
         <div>
             <p>{release.name}</p>
-            <p>{release.artists.join(', ')}</p> {/* Join the artists array into a string */}
+            <p>{release.artists.join(', ')}</p>
         </div>
     </div>
 ))}
@@ -82,18 +103,57 @@ const Browse = () => {
         <img src={release.cover_art} alt={release.name} className="album-cover" onClick={() => openModal(release)} />
         <div>
             <p>{release.name}</p>
-            <p>{release.artists.join(', ')}</p> {/* Join the artists array into a string */}
+            <p>{release.artists.join(', ')}</p>
         </div>
     </div>
 ))}
 </div>
 
-<Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={{ display: 'flex', justifyContent: 'space-between' }}>
-    <div>
-        <img src={currentAlbum?.cover_art} alt={currentAlbum?.name} className="album-cover" />
-        <h2>{currentAlbum?.name}</h2>
-        <p>{currentAlbum?.artists.join(', ')}</p>
-    </div>
+<p style={{ fontWeight: 'bold', fontSize: '30px', marginTop: '60px' }}>Kanye West's Albums</p>
+<div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+    {kanyeAlbums.map((album, index) => (
+        <div key={index} style={{ margin: '10px', width: 'calc(20% - 20px)', overflow: 'hidden' }}>
+            <img src={album.cover_art} alt={album.name} className="album-cover" onClick={() => openModal(album)} />
+            <div>
+                <p>{album.name}</p>
+                <p>{album.artists.join(', ')}</p>
+            </div>
+        </div>
+    ))}
+</div>
+
+<Modal 
+    isOpen={modalIsOpen} 
+    onRequestClose={closeModal} 
+    style={{
+        content: {
+            display: 'flex', 
+            justifyContent: 'space-between',
+            backgroundColor: '#38618c' 
+        }
+    }}
+>
+<div>
+    <img 
+        src={currentAlbum?.cover_art} 
+        alt={currentAlbum?.name} 
+        className="album-cover" 
+        style={{ width: '500px', height: '500px' }} // Adjust the size as needed
+    />
+    <h2>{currentAlbum?.name}</h2>
+    <p>{currentAlbum?.artists.join(', ')}</p>
+    {currentAlbum?.album_type === "album" && (
+        <ul>
+            {tracklist.map((track, index) => (
+                <li key={index}>{track.name}</li>
+            ))}
+        </ul>
+    )}
+            
+            <button style={{ backgroundColor: 'white', color: 'black', marginRight: '10px' }} onClick={() => {}}>Set as Favorite ❤️</button>
+            <button style={{ backgroundColor: 'white', color: 'black' }} onClick={() => {}}>Add to Playlist 🎵</button>
+            
+</div>
     <div>
         <h2>Review {currentAlbum?.name}</h2>
         <form onSubmit={handleReviewSubmit}>

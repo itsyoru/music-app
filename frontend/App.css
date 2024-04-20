@@ -118,3 +118,12 @@
   cursor: pointer; /* Change the cursor to a hand when hovering over the button */
 }
 
+.feed-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20%; /* adjust this to change the width of the feed */
+  height: 100vh; /* make the feed take up the full height of the viewport */
+  overflow-y: auto; /* add a scrollbar if the content is too long to fit in the feed */
+}
+

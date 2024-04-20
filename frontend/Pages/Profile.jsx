@@ -1,15 +1,104 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../App.css';
 
-function Homepage() {
+function Profile() {
+    const [username, setUsername] = useState('');
+    const [bio, setBio] = useState('');
+    const [avatar, setAvatar] = useState('');
+    const [email, setEmail] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
+
+    useEffect(() => {
+        if (!localStorage.getItem('username')) {
+            window.alert('Please log in first!');
+            window.location.href = '/login';
+        }
+    }, []);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const response = await fetch(`http://localhost:5001/users/${localStorage.getItem('username')}`);
+            const data = await response.json();
+
+            setUsername(data.username);
+            setBio(data.bio);
+            setAvatar(data.avatar);
+            setEmail(data.email);
+        };
+
+        fetchUserData();
+    }, []);
+
+    const connectSpotify = async () => {
+        try {
+            const clientId = '67c2fdb01aa44023ac131087069162f0'; // replace with your client ID
+            const redirectUri = encodeURIComponent('http://localhost:5173/profile');
+            const scopes = encodeURIComponent('streaming user-read-email user-read-private');
+            const url = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${scopes}&redirect_uri=${redirectUri}`;
+    
+            window.location.href = url;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const Edit = () => {
+        setIsEditing(true);
+    };
+
+    const Save = async () => {
+        const response = await fetch(`http://localhost:5001/users/${localStorage.getItem('username')}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ bio, avatar, email })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            setUsername(data.username);
+            setBio(data.bio);
+            setAvatar(data.avatar);
+            setIsEditing(false);
+        } else {
+            window.alert('An error occurred while updating your profile.');
+        }
+    };
+
     return (
-        <div>
-            <h1>Welcome to DEN!</h1>
-            <p>Welcome to your profile. 
-                This page is under construction!
-            </p>
+        <div className="Profile">
+            {isEditing ? (
+                <>
+                    <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <textarea
+                        value={bio}
+                        onChange={(e) => setBio(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        value={avatar}
+                        placeholder="Avatar URL"
+                        onChange={(e) => setAvatar(e.target.value)}
+                    />
+                    <button onClick={Save}>Save</button>
+                </>
+            ) : (
+                <>
+                    <h4>{username}</h4>
+                    <img src={avatar} alt="User avatar" />
+                    <p>Bio: {bio}</p>
+                    <button onClick={Edit}>Edit</button>
+                    <button onClick={connectSpotify}>Connect your account with Spotify</button>
+                </>
+            )}
         </div>
     );
 }
 
-export default Homepage;
+export default Profile;
