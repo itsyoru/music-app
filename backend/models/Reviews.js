@@ -22,7 +22,16 @@ const reviewSchema = new mongoose.Schema({
     reviewedDate: {
         type: Date,
         default: Date.now
-    }
+    },
+
+    albumName: { // new field for album name
+        type: String,
+        required: true
+    },
+    albumCoverArt: { // new field for album cover art
+        type: String,
+        required: true
+    },
 });
 
 const Review = mongoose.model('Review', reviewSchema);

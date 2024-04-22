@@ -6,9 +6,10 @@ import records from '../assets/records.jpg';
 
 function Review({ review }) {
   return (
-    <div>
-      <p>{review.comment}</p>
-      <p>{new Date(review.reviewedDate).toLocaleString()}</p>
+      <div className="review">
+      <img src={review.albumCoverArt} alt={review.albumName} className="review-cover-art" /> {/* add class */}
+          <h3>{review.albumName}</h3> {/* display the album name */}
+          <p>{review.comment}</p>
     </div>
   );
 }
@@ -41,10 +42,10 @@ function Homepage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <div className="feed-container">
-        <h2 style={{ marginTop: '20px' }}>Latest Reviews</h2>
+      <div className="feed-container" style={{ overflow: 'hidden', fontSize: '0.8em' , marginTop: '84px' }}>
+        <h2 style={{ marginTop: '14px', fontSize: '1.4em' }}>Latest Reviews</h2>
         {reviews.map((review, index) => (
-          <Review key={index} review={review} />
+          <Review key={index} review={review} style={{ width: '60%', padding: '10px' }} />
         ))}
       </div>
   
@@ -58,7 +59,7 @@ function Homepage() {
         <div style={{
           backgroundImage: `url(${records})`,
           backgroundRepeat: 'no-repeat',
-          backgroundSize: '60% auto',
+          backgroundSize: '24% auto',
           backgroundPosition: 'center',
           width: '200%',
           height: '50vh', 

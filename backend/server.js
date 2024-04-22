@@ -60,7 +60,8 @@ app.put('/users/:username', async (req, res) => {
 
 
 app.post('/reviews', async (req, res) => {
-    const { user, spotifyID, rating, comment } = req.body;
+    console.log(req.body);
+    const { user, spotifyID, rating, comment, albumName, albumCoverArt } = req.body;
 
     const userDoc = await User.findOne({ username: user });
 
@@ -71,6 +72,8 @@ app.post('/reviews', async (req, res) => {
     const newReview = new Review({
         user: userDoc._id, 
         spotifyID: spotifyID,
+        albumName: albumName, // add this line
+        albumCoverArt: albumCoverArt, // add this line
         rating: rating,
         comment: comment
     });
@@ -86,7 +89,7 @@ app.post('/reviews', async (req, res) => {
 
 app.get('/reviews', async (req, res) => {
     try {
-        const reviews = await Review.find().sort({ createdAt: -1 }).limit(5);
+        const reviews = await Review.find().sort({ reviewedDate: -1 }).limit(3);
         res.json(reviews);
     } catch (err) {
         console.error(err);

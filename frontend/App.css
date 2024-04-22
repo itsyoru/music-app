@@ -122,8 +122,12 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 20%; /* adjust this to change the width of the feed */
-  height: 100vh; /* make the feed take up the full height of the viewport */
-  overflow-y: auto; /* add a scrollbar if the content is too long to fit in the feed */
+  width: 18%; /* adjust this to change the width of the feed */
+  height: 90vh; /* make the feed take up the full height of the viewport */
+}
+
+.review-cover-art {
+  width: 100px; /* adjust as needed */
+  height: 100px; /* adjust as needed */
 }
 

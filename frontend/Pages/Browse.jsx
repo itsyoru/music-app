@@ -42,9 +42,12 @@ const Browse = () => {
             rating: Number(reviewForm.rating),
             comment: reviewForm.comment,
             spotifyID: currentAlbum.id,
-            user: username
+            user: username,
+            albumName: currentAlbum.name, // add this line
+            albumCoverArt: currentAlbum.cover_art // add this line
         };
 
+        console.log(review);
         const response = await fetch('http://localhost:5001/reviews', {
             method: 'POST',
             headers: {
@@ -129,7 +132,7 @@ const Browse = () => {
         content: {
             display: 'flex', 
             justifyContent: 'space-between',
-            backgroundColor: '#38618c' 
+            backgroundColor: '#c8b4fd' 
         }
     }}
 >

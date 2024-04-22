@@ -5,6 +5,9 @@ import SearchBar from '../Components/SearchBar';
 
 function Parties() {
     const [token, setToken] = useState(null);
+    const [parties, setParties] = useState({}); // Parties state
+    const [joinPartyId, setJoinPartyId] = useState(''); // State for the party ID to join
+    const [currentPartyId, setCurrentPartyId] = useState(null); // State for the current party ID
 
     useEffect(() => {
         axios.get('http://localhost:3001/token')
@@ -44,16 +47,44 @@ function Parties() {
         setCurrentAlbum(albumId);
     };
 
+    const createParty = () => {
+        const partyId = Date.now().toString();
+        setParties({
+            ...parties,
+            [partyId]: {
+                album: currentAlbum,
+                users: []
+            }
+        });
+        setCurrentPartyId(partyId);
+    };
+
+    const joinParty = () => {
+        if (parties[joinPartyId]) {
+            setParties({
+                ...parties,
+                [joinPartyId]: {
+                    ...parties[joinPartyId],
+                    users: [...parties[joinPartyId].users, 'userId']
+                }
+            });
+        } else {
+            console.error('Party not found');
+        }
+    };
+
     return (
-    <div>
-        <h1>Welcome to DEN!</h1>
-        <p>Welcome to the parties page.
-            This page is under construction! </p>
+        <div>
+            <h1>Welcome to DEN!</h1>
+            <p>Welcome to the parties page. This page is under construction!</p>
             <SearchBar onAlbumSelect={handleAlbumSelect} />
+            <button onClick={createParty}>Create Party</button>
+            {currentPartyId && <p>Party ID: {currentPartyId}</p>}
+            <input type="text" value={joinPartyId} onChange={e => setJoinPartyId(e.target.value)} placeholder="Enter party ID" />
+            <button onClick={joinParty}>Join Party</button>
             <iframe src={`https://open.spotify.com/embed/album/${currentAlbum}`} width="800" height="800" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-        
-    </div>
-);
+        </div>
+    );
 }
 
 export default Parties;

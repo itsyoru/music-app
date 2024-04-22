@@ -76,7 +76,7 @@ const SearchBar = ({ onAlbumSelect }) => {
             const tokenData = await tokenResponse.json();
             const accessToken = tokenData.token;
     
-            const response = await fetch(`https://api.spotify.com/v1/search?q=${debouncedTerm}&type=album`, {
+            const response = await fetch(`https://api.spotify.com/v1/search?q=${debouncedTerm}&type=album,track`, {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`
                 }
@@ -112,7 +112,7 @@ const SearchBar = ({ onAlbumSelect }) => {
                 value={searchTerm} 
                 onChange={handleSearch} 
                 placeholder="Search for an album/artist/track here!"
-                style={{ width: '400px', height: '40px', fontSize: '20px' }} 
+                style={{ width: '340px', height: '30px', fontSize: '18px' }} 
             />
 
             {results.map((album, index) => (
