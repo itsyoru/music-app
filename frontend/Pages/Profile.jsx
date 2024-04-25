@@ -7,6 +7,7 @@ function Profile() {
     const [avatar, setAvatar] = useState('');
     const [email, setEmail] = useState('');
     const [isEditing, setIsEditing] = useState(false);
+    const [reviews, setReviews] = useState([]);
 
     useEffect(() => {
         if (!localStorage.getItem('username')) {
@@ -26,7 +27,15 @@ function Profile() {
             setEmail(data.email);
         };
 
+        const fetchUserReviews = async () => {
+            const response = await fetch(`http://localhost:5001/reviews/${localStorage.getItem('username')}`);
+            const data = await response.json();
+
+            setReviews(data);
+        };
+
         fetchUserData();
+        fetchUserReviews();
     }, []);
 
     const connectSpotify = async () => {
@@ -95,6 +104,19 @@ function Profile() {
                     <p>Bio: {bio}</p>
                     <button onClick={Edit}>Edit</button>
                     <button onClick={connectSpotify}>Connect your account with Spotify</button>
+                    <h2>Recent Activity...</h2>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+                        {reviews.map((review, index) => (
+                            <div key={index} style={{ margin: '10px', width: 'calc(16.66% - 20px)', overflow: 'hidden' }}>
+                                <h3>{review.albumName}</h3>
+                                <img src={review.albumCoverArt} alt={review.albumName} className="album-cover" />
+                                <div>
+                                    <p>Rating: {review.rating}</p>
+                                    <p>{review.comment}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </>
             )}
         </div>

@@ -6,6 +6,8 @@ import Login from './Pages/Login'
 import Profile from './Pages/Profile'
 import Register from './Pages/Register'
 import Parties from './Pages/Parties'
+import Partychat from './Pages/Partychat'
+import CreateAParty from './Pages/CreateAParty'
 
 const App = ()  => {
 
@@ -18,6 +20,9 @@ const App = ()  => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/register" element={<Register />} />
         <Route path="/Parties" element={<Parties />} />
+        <Route path="/Parties/:partyName" element={<Parties />} /> {/* Update this line */}
+        <Route path="/Partychat/:roomId" element={<Partychat/>}/>
+        <Route path="/CreateAParty" element={<CreateAParty />} />
       </Routes>
     </Router>
   );

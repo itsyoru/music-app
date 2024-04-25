@@ -22,7 +22,7 @@ const Navbar = () => {
                     <Link to="/browse" style={{ color: '#616336', fontSize: '20px' }}>Browse</Link>
                 </li>
                 <li style={{ marginRight: '10px' }}>
-                    <Link to="/parties" style={{ color: '#616336', fontSize: '20px' }}>Parties</Link>
+                    <Link to="/createaparty" style={{ color: '#616336', fontSize: '20px' }}>Parties</Link>
                 </li>
             </ul>
         </nav>

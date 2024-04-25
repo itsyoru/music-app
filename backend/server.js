@@ -3,6 +3,9 @@ import mongoose from 'mongoose';
 import User from './models/userModel.js';
 import cors from 'cors';
 import Review from './models/Reviews.js';
+import http from 'http';
+import { Server } from 'socket.io';
+import Party from './models/Parties.js';
 
 const app = express();
 app.use(cors()); 
@@ -112,6 +115,124 @@ app.post('/login', async (req, res) => {
 
     res.json({ message: 'Login successful' });
 });
+
+app.get('/reviews/:username', async (req, res) => {
+    const userDoc = await User.findOne({ username: req.params.username });
+
+    if (!userDoc) {
+        return res.status(400).json({ message: 'User not found' });
+    }
+
+    const reviews = await Review.find({ user: userDoc._id });
+
+    res.json(reviews);
+});
+
+
+// Create a party
+app.post('/party', async (req, res) => {
+    const { name } = req.body;
+    const party = await Party.findOne({ name });
+    if (party) {
+        return res.status(400).json({ error: 'Party already exists' });
+    }
+    const newParty = new Party({ name, users: [], chat: [], videoQueue: [] });
+    const savedParty = await newParty.save();
+    console.log('Saved party:', savedParty); // Log the saved party
+    res.status(201).json({ message: 'Party created' });
+});
+
+// Join a party
+app.put('/party/join', async (req, res) => {
+    const { name, userId } = req.body;
+    const party = await Party.findOne({ name });
+    if (!party) {
+        return res.status(404).json({ error: 'Party not found' });
+    }
+    // Add user to party
+    party.users.push(userId);
+    await party.save();
+    res.json(party);
+});
+
+// Get a party
+app.get('/party/:name', async (req, res) => {
+    const { name } = req.params;
+    const party = await Party.findOne({ name });
+    if (!party) {
+        return res.status(404).json({ error: 'Party not found' });
+    }
+    res.json(party);
+});
+
+// Get all parties
+app.get('/parties', async (req, res) => {
+    try {
+        const parties = await Party.find({});
+        res.json(parties);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Add a video to a party's queue
+app.post('/party/:name/videos', async (req, res) => {
+    const { name } = req.params;
+    const { id, title } = req.body;
+    const party = await Party.findOne({ name });
+    if (!party) {
+        return res.status(404).json({ error: 'Party not found' });
+    }
+    party.videoQueue.push({ id, title });
+    await party.save();
+    res.json(party);
+});
+
+// Remove a video from a party's queue
+app.delete('/party/:name/videos/:id', async (req, res) => {
+    const { name, id } = req.params;
+    const party = await Party.findOne({ name });
+    if (!party) {
+        return res.status(404).json({ error: 'Party not found' });
+    }
+    party.videoQueue = party.videoQueue.filter(video => video.id !== id);
+    await party.save();
+    res.json(party);
+});
+
+// Add a chat message to a party
+app.post('/party/:name/chat', async (req, res) => {
+    const { name } = req.params;
+    const { userId, message } = req.body;
+    const party = await Party.findOne({ name });
+    if (!party) {
+        return res.status(404).json({ error: 'Party not found' });
+    }
+    party.chat.push({ user: userId, message });
+    await party.save();
+    res.json(party);
+});
+
+// Get the video queue for a party
+app.get('/party/:name/videos', async (req, res) => {
+    console.log('Request received for /party/:name/videos');
+    const { name } = req.params;
+    console.log('Name:', name);
+    try {
+        const party = await Party.findOne({ name });
+        console.log('Party found:', party);
+        if (!party) {
+            return res.status(404).json({ error: 'Party not found' });
+        }
+        res.json(party.videoQueue);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 
 const port = process.env.PORT || 5001;
 app.listen(port, () => console.log(`Server is running on port ${port}`));

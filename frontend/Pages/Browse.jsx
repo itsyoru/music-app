@@ -2,6 +2,7 @@ import '../App.css';
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import SearchBar from '../Components/SearchBar';
+import StarRatings from 'react-star-ratings';
 
 const Browse = () => {
     const [newReleases, setNewReleases] = useState([]);
@@ -155,21 +156,28 @@ const Browse = () => {
             
             <button style={{ backgroundColor: 'white', color: 'black', marginRight: '10px' }} onClick={() => {}}>Set as Favorite ❤️</button>
             <button style={{ backgroundColor: 'white', color: 'black' }} onClick={() => {}}>Add to Playlist 🎵</button>
-            
+
 </div>
     <div>
         <h2>Review {currentAlbum?.name}</h2>
         <form onSubmit={handleReviewSubmit}>
-            <label>
-                Rating:
-                <input type="number" min="1" max="5" value={reviewForm.rating} onChange={e => setReviewForm({ ...reviewForm, rating: e.target.value })} required />
-            </label>
+        <label>
+            Rating:
+            <StarRatings
+                rating={parseInt(reviewForm.rating) || 0}
+                starRatedColor="blue"
+                changeRating={(newRating) => setReviewForm({ ...reviewForm, rating: newRating })}
+                numberOfStars={5}
+                name='rating'
+            />
+        </label>
             <label>
                 Comment:
                 <textarea value={reviewForm.comment} onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })} required />
             </label>
             <button type="submit">Submit Review</button>
         </form>
+        <iframe src={`https://open.spotify.com/embed/album/${currentAlbum?.id}`} width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
     </div>
 </Modal>
         </div>

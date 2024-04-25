@@ -1,88 +1,123 @@
-import React, { useEffect, useState } from 'react';
-import '../App.css';
+import React, { useState, useEffect } from 'react';
+import YouTube from 'react-youtube';
 import axios from 'axios';
-import SearchBar from '../Components/SearchBar'; 
+import { useParams } from 'react-router-dom';
 
 function Parties() {
-    const [token, setToken] = useState(null);
-    const [parties, setParties] = useState({}); // Parties state
-    const [joinPartyId, setJoinPartyId] = useState(''); // State for the party ID to join
-    const [currentPartyId, setCurrentPartyId] = useState(null); // State for the current party ID
+    const { partyName } = useParams();
+    const localStorageKey = `videoQueue-${partyName}`;
+
+    const [videoQueue, setVideoQueue] = useState(() => {
+        const savedQueue = localStorage.getItem(localStorageKey);
+        return savedQueue ? JSON.parse(savedQueue) : [{id: 'dQw4w9WgXcQ', title: 'Rick Astley - Never Gonna Give You Up (Video)'}];
+    });
+    const [currentVideo, setCurrentVideo] = useState(null);
+    const [newVideoId, setNewVideoId] = useState('');
+
+    const apiKey = 'AIzaSyCjnRfIVkZkci52e3v4AmyEvHvWebfqd84';
 
     useEffect(() => {
-        axios.get('http://localhost:3001/token')
-            .then(response => {
-                setToken(response.data.token);
-                localStorage.setItem('spotifyAuthToken', response.data.token);
-                console.log('Spotify Auth Token:', response.data.token);
-            })
-            .catch(error => console.error(error));
-    }, []);
-
-    useEffect(() => {
-        window.onSpotifyWebPlaybackSDKReady = () => {
-            const token = localStorage.getItem('spotifyAuthToken');
-            if (token) {
-                const player = new window.Spotify.Player({
-                    name: 'Web Playback SDK Quick Start Player',
-                    getOAuthToken: cb => { cb(token); }
-                });
-    
-                // Error handling
-                player.addListener('initialization_error', ({ message }) => { console.error(message); });
-                player.addListener('authentication_error', ({ message }) => { console.error(message); });
-                player.addListener('account_error', ({ message }) => { console.error(message); });
-                player.addListener('playback_error', ({ message }) => { console.error(message); });
-    
-                player.addListener('player_state_changed', state => { console.log(state); });
-    
-                player.connect();
-            }
-        };
-    }, []);
-
-    const [currentAlbum, setCurrentAlbum] = React.useState('1nTvIQEXvygqSIqc2vuwAz'); // Default album
-
-    const handleAlbumSelect = (albumId) => {
-        setCurrentAlbum(albumId);
-    };
-
-    const createParty = () => {
-        const partyId = Date.now().toString();
-        setParties({
-            ...parties,
-            [partyId]: {
-                album: currentAlbum,
-                users: []
-            }
-        });
-        setCurrentPartyId(partyId);
-    };
-
-    const joinParty = () => {
-        if (parties[joinPartyId]) {
-            setParties({
-                ...parties,
-                [joinPartyId]: {
-                    ...parties[joinPartyId],
-                    users: [...parties[joinPartyId].users, 'userId']
-                }
-            });
-        } else {
-            console.error('Party not found');
+        if (!currentVideo) {
+            setCurrentVideo(videoQueue[0]);
         }
+    }, [currentVideo, videoQueue]);
+
+    useEffect(() => {
+        localStorage.setItem(localStorageKey, JSON.stringify(videoQueue));
+    }, [videoQueue]);
+
+    useEffect(() => {
+        console.log(`Fetching videos for party: ${partyName}`);
+        axios.get(`http://localhost:5001/party/${partyName}/videos`)
+            .then(response => {
+                if (response.data.length > 0) {
+                    setVideoQueue(response.data);
+                } else {
+                    alert('No videos in queue');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }, []);
+
+    const handleVideoEnd = () => {
+        setVideoQueue(oldQueue => {
+            const newQueue = oldQueue.slice(1);
+            localStorage.setItem(localStorageKey, JSON.stringify(newQueue));
+            return newQueue;
+        });
+    };
+
+    const addVideoToQueue = (video) => {
+        fetch(`http://localhost:5001/party/${partyName}/videos`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(video),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                alert('Error: ' + data.error);
+            } else {
+                setVideoQueue(prevQueue => [...prevQueue, video]);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    };
+
+    const handleAddVideo = (event) => {
+        event.preventDefault();
+    
+        // Fetch video details from YouTube API
+        axios.get(`https://www.googleapis.com/youtube/v3/videos?id=${newVideoId}&key=${apiKey}&part=snippet`)
+            .then(response => {
+                if (response.data.items.length > 0) {
+                    const video = {
+                        id: newVideoId,
+                        title: response.data.items[0].snippet.title
+                    };
+                    addVideoToQueue(video);
+                    setNewVideoId(''); // Clear the input field
+                } else {
+                    alert('Video not found');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     };
 
     return (
         <div>
-            <h1>Welcome to DEN!</h1>
-            <p>Welcome to the parties page. This page is under construction!</p>
-            <SearchBar onAlbumSelect={handleAlbumSelect} />
-            <button onClick={createParty}>Create Party</button>
-            {currentPartyId && <p>Party ID: {currentPartyId}</p>}
-            <input type="text" value={joinPartyId} onChange={e => setJoinPartyId(e.target.value)} placeholder="Enter party ID" />
-            <button onClick={joinParty}>Join Party</button>
-            <iframe src={`https://open.spotify.com/embed/album/${currentAlbum}`} width="800" height="800" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+            <h1>Party Room</h1>
+            <h2>Now Playing: {currentVideo?.title}</h2>
+            <YouTube videoId={currentVideo?.id} onEnd={handleVideoEnd} key={currentVideo?.id} />
+            <form onSubmit={handleAddVideo}>
+                <input
+                    type="text"
+                    value={newVideoId}
+                    onChange={e => setNewVideoId(e.target.value)}
+                    placeholder="Enter YouTube video ID"
+                    required
+                />
+                <button type="submit">Add to Queue</button>
+            </form>
+            <h2>Up Next:</h2>
+            <ul>
+                {videoQueue.slice(1).map((video, index) => (
+                    <li key={index}>{video.title}</li>
+                ))}
+            </ul>
         </div>
     );
 }
