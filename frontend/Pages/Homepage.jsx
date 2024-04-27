@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../App.css';
 import Navbar from '../Components/Navbar';
 import SearchBar from '../Components/SearchBar';
-import records from '../assets/records.jpg';
+import records from '../assets/tape.jpeg';
 
 function Review({ review }) {
   return (

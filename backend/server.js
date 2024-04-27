@@ -201,18 +201,6 @@ app.delete('/party/:name/videos/:id', async (req, res) => {
     res.json(party);
 });
 
-// Add a chat message to a party
-app.post('/party/:name/chat', async (req, res) => {
-    const { name } = req.params;
-    const { userId, message } = req.body;
-    const party = await Party.findOne({ name });
-    if (!party) {
-        return res.status(404).json({ error: 'Party not found' });
-    }
-    party.chat.push({ user: userId, message });
-    await party.save();
-    res.json(party);
-});
 
 // Get the video queue for a party
 app.get('/party/:name/videos', async (req, res) => {

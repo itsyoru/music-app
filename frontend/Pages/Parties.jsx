@@ -32,9 +32,8 @@ function Parties() {
             .then(response => {
                 if (response.data.length > 0) {
                     setVideoQueue(response.data);
-                } else {
-                    alert('No videos in queue');
                 }
+                // Removed the else block that triggered the alert
             })
             .catch(error => {
                 console.error('Error:', error);

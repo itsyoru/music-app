@@ -119,6 +119,8 @@ app.get('/albums/:id/tracks', async (req, res) => {
   });
 });
 
+
+
 app.get('/artist-albums', async (req, res) => {
   const accessToken = await getValidToken();
   const artistId = '5K4W6rqBFWDnAN6FQUkS6x'; // Kanye West's Spotify Artist ID

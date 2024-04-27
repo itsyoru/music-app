@@ -1,17 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
 function CreateOrJoinAParty() {
     const navigate = useNavigate();
 
     const [partyNameToCreate, setPartyNameToCreate] = useState('');
     const [partyNameToJoin, setPartyNameToJoin] = useState('');
     const [parties, setParties] = useState([]);
+    const [partyVideos, setPartyVideos] = useState({}); // Add this line
+
 
     useEffect(() => {
         fetch('http://localhost:5001/parties')
             .then(response => response.json())
-            .then(data => setParties(data.map(party => party.name)));
+            .then(data => {
+                const partyNames = data.map(party => party.name);
+                setParties(partyNames);
+    
+                const promises = partyNames.map(partyName => 
+                    fetch(`http://localhost:5001/party/${partyName}/videos`)
+                        .then(response => response.json())
+                        .then(videos => ({ partyName, currentVideo: videos[0] }))
+                );
+                Promise.all(promises).then(videosData => {
+                    const videosMap = {};
+                    videosData.forEach(({ partyName, currentVideo }) => {
+                        videosMap[partyName] = currentVideo;
+                    });
+                    setPartyVideos(videosMap);
+                });
+            });
     }, []);
 
     const handleCreateParty = (event) => {
@@ -68,10 +87,13 @@ function CreateOrJoinAParty() {
             <div>
                 <h2>Created Parties</h2>
                 <ul>
-                    {parties.map(party => (
-                        <li key={party}>{party}</li>
-                    ))}
-                </ul>
+    {parties.map((partyName, index) => (
+        <li key={index}>
+            {partyName}
+            {partyVideos[partyName] && ` - Now Playing: ${partyVideos[partyName].title}`}
+        </li>
+    ))}
+</ul>
             </div>
         </div>
     );

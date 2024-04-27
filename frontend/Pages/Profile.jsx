@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../App.css';
+import StarRatings from 'react-star-ratings';
 
 function Profile() {
     const [username, setUsername] = useState('');
@@ -77,46 +78,74 @@ function Profile() {
     };
 
     return (
-        <div className="Profile">
+        <div>
             {isEditing ? (
                 <>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <textarea
-                        value={bio}
-                        onChange={(e) => setBio(e.target.value)}
-                    />
-                    <input
-                        type="text"
-                        value={avatar}
-                        placeholder="Avatar URL"
-                        onChange={(e) => setAvatar(e.target.value)}
-                    />
+                    <label style={{ display: 'block', margin: '10px 0' }}>
+                        Username:
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            style={{ display: 'block', margin: '5px 0' }}
+                        />
+                    </label>
+                    <label style={{ display: 'block', margin: '10px 0' }}>
+                        Bio:
+                        <textarea
+                            value={bio}
+                            onChange={(e) => setBio(e.target.value)}
+                            style={{ display: 'block', margin: '5px 0' }}
+                        />
+                    </label>
+                    <label style={{ display: 'block', margin: '10px 0' }}>
+                        Avatar URL:
+                        <input
+                            type="text"
+                            value={avatar}
+                            placeholder="Avatar URL"
+                            onChange={(e) => setAvatar(e.target.value)}
+                            style={{ display: 'block', margin: '5px 0' }}
+                        />
+                    </label>
                     <button onClick={Save}>Save</button>
                 </>
             ) : (
                 <>
                     <h4>{username}</h4>
-                    <img src={avatar} alt="User avatar" />
+                    <img src={avatar} alt="User Avatar" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
                     <p>Bio: {bio}</p>
                     <button onClick={Edit}>Edit</button>
                     <button onClick={connectSpotify}>Connect your account with Spotify</button>
                     <h2>Recent Activity...</h2>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'nowrap' }}>
-                        {reviews.map((review, index) => (
-                            <div key={index} style={{ margin: '10px', width: 'calc(16.66% - 20px)', overflow: 'hidden' }}>
-                                <h3>{review.albumName}</h3>
-                                <img src={review.albumCoverArt} alt={review.albumName} className="album-cover" />
-                                <div>
-                                    <p>Rating: {review.rating}</p>
-                                    <p>{review.comment}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                        {reviews.slice(-5).map((review, index) => (
+    <div key={index} style={{ margin: '10px', width: 'calc(20% - 20px)', overflow: 'hidden' }}>
+        <img src={review.albumCoverArt} alt={review.albumName} className="album-cover" />
+        <div>
+            <p style={{ 
+                whiteSpace: 'nowrap', 
+                overflow: 'hidden', 
+                textOverflow: 'ellipsis', 
+                width: '100%' 
+            }}>
+                {review.albumName}
+            </p>
+            <div>
+                <StarRatings
+                    rating={parseInt(review.rating) || 0}
+                    starRatedColor="purple"
+                    numberOfStars={5}
+                    name='rating'
+                    starDimension="20px"
+                    starSpacing="5px"
+                />
+                <p>{review.comment}</p>
+            </div>
+        </div>
+    </div>
+))}
+</div>
                 </>
             )}
         </div>

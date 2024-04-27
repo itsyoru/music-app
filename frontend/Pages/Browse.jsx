@@ -12,6 +12,8 @@ const Browse = () => {
     const [currentAlbum, setCurrentAlbum] = useState(null);
     const [tracklist, setTracklist] = useState([]);
     const [kanyeAlbums, setKanyeAlbums] = useState([]);
+    const [youtubeVideoId, setYoutubeVideoId] = useState(null);
+
 
     useEffect(() => {
         fetch('http://localhost:3000/artist-albums')
@@ -33,6 +35,19 @@ const Browse = () => {
             .then(data => setTop10(data))
             .catch(error => console.error('Error:', error));
     }, []);
+
+    useEffect(() => {
+        if (tracklist.length > 1) {
+            const artistNames = tracklist[0].artists.join(' ');
+            fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(tracklist[0].name + ' ' + artistNames)}&type=video&key=AIzaSyCjnRfIVkZkci52e3v4AmyEvHvWebfqd84`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.items.length > 0) {
+                        setYoutubeVideoId(data.items[0].id.videoId);
+                    }
+                });
+        }
+    }, [tracklist]);
 
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
@@ -128,56 +143,79 @@ const Browse = () => {
 
 <Modal 
     isOpen={modalIsOpen} 
-    onRequestClose={closeModal} 
+    onRequestClose={() => setModalIsOpen(false)} 
     style={{
         content: {
             display: 'flex', 
             justifyContent: 'space-between',
-            backgroundColor: '#c8b4fd' 
+            backgroundColor: '#c8b4fd', 
+            padding: '20px'
         }
     }}
 >
-<div>
-    <img 
-        src={currentAlbum?.cover_art} 
-        alt={currentAlbum?.name} 
-        className="album-cover" 
-        style={{ width: '500px', height: '500px' }} // Adjust the size as needed
-    />
-    <h2>{currentAlbum?.name}</h2>
-    <p>{currentAlbum?.artists.join(', ')}</p>
-    {currentAlbum?.album_type === "album" && (
-        <ul>
-            {tracklist.map((track, index) => (
-                <li key={index}>{track.name}</li>
-            ))}
-        </ul>
-    )}
-            
-            <button style={{ backgroundColor: 'white', color: 'black', marginRight: '10px' }} onClick={() => {}}>Set as Favorite ❤️</button>
-            <button style={{ backgroundColor: 'white', color: 'black' }} onClick={() => {}}>Add to Playlist 🎵</button>
-
-</div>
+    <div style={{ marginRight: '20px' }}>
+        <img 
+            src={currentAlbum?.cover_art} 
+            alt={currentAlbum?.name} 
+            className="album-cover" 
+            style={{ width: '500px', height: '500px', marginBottom: '20px' }} // Adjust the size as needed
+        />
+        <h2>{currentAlbum?.name}</h2>
+        <p>{currentAlbum?.artists.join(', ')}</p>
+        {currentAlbum?.album_type === "album" && (
+            <ul>
+                {tracklist.map((track, index) => (
+                    <li key={index} onClick={() => playTrack(track)}>{track.name}</li>
+                ))}
+            </ul>
+        )}
+                
+        <button style={{ backgroundColor: 'white', color: 'black', marginRight: '10px', marginTop: '20px' }} onClick={() => {}}>Set as Favorite ❤️</button>
+        <button style={{ backgroundColor: 'white', color: 'black', marginTop: '20px' }} onClick={() => {}}>Add to Playlist 🎵</button>
+    </div>
     <div>
         <h2>Review {currentAlbum?.name}</h2>
-        <form onSubmit={handleReviewSubmit}>
-        <label>
-            Rating:
-            <StarRatings
-                rating={parseInt(reviewForm.rating) || 0}
-                starRatedColor="blue"
-                changeRating={(newRating) => setReviewForm({ ...reviewForm, rating: newRating })}
-                numberOfStars={5}
-                name='rating'
-            />
-        </label>
+        <form onSubmit={handleReviewSubmit} style={{ marginBottom: '20px' }}>
             <label>
-                Comment:
-                <textarea value={reviewForm.comment} onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })} required />
+                Rating:
+                <StarRatings
+                    rating={parseInt(reviewForm.rating) || 0}
+                    starRatedColor="blue"
+                    changeRating={(newRating) => setReviewForm({ ...reviewForm, rating: newRating })}
+                    numberOfStars={5}
+                    name='rating'
+                    starDimension="20px"
+                    starSpacing="5px"
+                />
             </label>
-            <button type="submit">Submit Review</button>
+            <label style={{ display: 'block', marginTop: '10px' }}>
+                Comment:
+                <textarea value={reviewForm.comment} onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })} required style={{ width: '100%', height: '100px', marginTop: '5px' }} />
+            </label>
+            <button type="submit" style={{ display: 'block', marginTop: '10px' }}>Submit Review</button>
         </form>
-        <iframe src={`https://open.spotify.com/embed/album/${currentAlbum?.id}`} width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    {youtubeVideoId && (
+        <iframe 
+            width="560" 
+            height="315" 
+            src={`https://www.youtube.com/embed/${youtubeVideoId}`} 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen
+            style={{ marginBottom: '20px' }}
+        ></iframe>
+    )}
+    <iframe 
+        src={`https://open.spotify.com/embed/album/${currentAlbum?.id}`} 
+        width="300" 
+        height="380" 
+        frameborder="0" 
+        allowtransparency="true" 
+        allow="encrypted-media"
+    ></iframe>
+</div>
     </div>
 </Modal>
         </div>
