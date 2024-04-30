@@ -74,13 +74,20 @@
   width: 76px;
   height: 42px;
   font-size: 10px;
-  background-color: #f466ad;
+  background-color: #f550a2;
 }
 
 .register-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
   width: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  
 }
 
 .image-container {
@@ -94,16 +101,30 @@
 }
 
 .form-container {
-  flex: 1;
-  max-width: 50%;
+ 
+  width: 40%;
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container input[type="submit"] {
+  width: 100%; 
+  height: 50px; 
+  margin-bottom: 20px; /* Add space between inputs */
+  padding: 0 10px; /* Add padding */
+  font-size: 16px; /* Adjust font size */
 }
 
 .form-container div {
-  margin-bottom: 56px;
+  margin-bottom: 50px;
 }
 
 .form-container label {
@@ -116,9 +137,9 @@
 }
 
 .form-container input[type="submit"] {
-  padding: 10px 20px;
+  padding: 10px 0px;
   /* Increase the size of the button */
-  background-color: #f466ad;
+  background-color: #da80b0;
   /* Change the background color */
   border: none;
   /* Remove the default border */
@@ -155,12 +176,13 @@
 }
 
 .banner {
-  background-image: url(https://cdn.digitaldjtips.com/app/uploads/2020/06/30094959/dj-playing-whole-track.jpg);
+  background-image: url(tapes.jpeg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   height: 100vh;
   position: relative;
-  top: -66px;
+  top: -6px;
   z-index: 0;
 }
+
