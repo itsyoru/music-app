@@ -57,8 +57,8 @@ function Homepage() {
         <h1></h1>
       </div>
   
-      <div className="features-container" style={{ padding: '20px' }}>
-  <h2>DEN ALLOWS YOU TO...</h2>
+      <div className="features-container" style={{ padding: '40px', marginRight:'-100px' }}>
+  <h2 style={{fontFamily:'monospace', marginRight:'-100px'}}>DEN ALLOWS YOU TO...</h2>
   <ul style={{ listStyleType: 'none' }}>
     <li>Discover new music.</li>
     <li>Catalogue what you've been listening to.</li>
@@ -68,7 +68,7 @@ function Homepage() {
 </div>
   
       <div className="feed-container" style={{ overflow: 'hidden', fontSize: '0.8em', marginTop: '60px' }}>
-        <h2 style={{ marginTop: '14px', fontSize: '1.4em' }}>Latest Reviews</h2>
+        <h2 style={{ marginTop: '14px', fontSize: '1.4em', fontFamily:'monospace' }}>LATEST REVIEWS</h2>
         <div className='reviews-wrapper'>
           {reviews.map((review, index) => (
             <Review key={index} review={review} style={{ width: '60%', padding: '10px' }} />
