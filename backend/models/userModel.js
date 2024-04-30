@@ -33,8 +33,9 @@ const userSchema = new mongoose.Schema({
     }],
 
     favoriteAlbums: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Album',
+        albumId: String,
+        albumName: String,
+        albumCoverArt: String
     }],
 
     createdAccountDate: {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import YouTube from 'react-youtube';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -6,6 +6,8 @@ import { useParams } from 'react-router-dom';
 function Parties() {
     const { partyName } = useParams();
     const localStorageKey = `videoQueue-${partyName}`;
+    const [player, setPlayer] = useState(null);
+    const intervalRef = useRef(null);
 
     const [videoQueue, setVideoQueue] = useState(() => {
         const savedQueue = localStorage.getItem(localStorageKey);
@@ -13,8 +15,42 @@ function Parties() {
     });
     const [currentVideo, setCurrentVideo] = useState(null);
     const [newVideoId, setNewVideoId] = useState('');
+    const [messages, setMessages] = useState([]);
+    const [newMessage, setNewMessage] = useState('');
+    const [currentTime, setCurrentTime] = useState(0);
+
+    
+    const handleStateChange = (event) => {
+        if (event.data === YouTube.PlayerState.PLAYING) {
+            intervalRef.current = setInterval(() => {
+                const currentTime = event.target.getCurrentTime();
+                setCurrentTime(currentTime);
+
+                axios.post(`http://localhost:5001/party/${partyName}/currentTime`, { currentTime });
+            }, 1000);
+        } else {
+            clearInterval(intervalRef.current);
+        }
+    };
+
+    const handleReady = (event) => {
+        const player = event.target;
+        setPlayer(player);
+
+        // Seek to the current time when the video is ready
+        player.seekTo(currentTime);
+    };
 
     const apiKey = 'AIzaSyCjnRfIVkZkci52e3v4AmyEvHvWebfqd84';
+
+    useEffect(() => {
+        // Fetch the current video and its playback time from the server when the component mounts
+        axios.get(`http://localhost:5001/party/${partyName}/currentVideo`)
+            .then(response => {
+                setCurrentVideo(response.data.video);
+                setCurrentTime(response.data.currentTime);
+            });
+    }, [partyName]);
 
     useEffect(() => {
         if (!currentVideo) {
@@ -33,7 +69,6 @@ function Parties() {
                 if (response.data.length > 0) {
                     setVideoQueue(response.data);
                 }
-                // Removed the else block that triggered the alert
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -41,11 +76,12 @@ function Parties() {
     }, []);
 
     const handleVideoEnd = () => {
-        setVideoQueue(oldQueue => {
-            const newQueue = oldQueue.slice(1);
-            localStorage.setItem(localStorageKey, JSON.stringify(newQueue));
-            return newQueue;
-        });
+        // Remove the current video from the queue
+        const newQueue = videoQueue.slice(1);
+        setVideoQueue(newQueue);
+
+        // Set the next video as the current video
+        setCurrentVideo(newQueue[0]);
     };
 
     const addVideoToQueue = (video) => {
@@ -96,29 +132,59 @@ function Parties() {
             });
     };
 
+    const handleNewMessage = () => {
+        const username = localStorage.getItem('username');
+        if (username) {
+            setMessages([...messages, { username, text: newMessage }]);
+            setNewMessage('');
+        } else {
+            alert('You must be logged in to send a message.');
+        }
+    };
+
     return (
         <div>
             <h1>Party Room</h1>
             <h2>Now Playing: {currentVideo?.title}</h2>
-            <YouTube videoId={currentVideo?.id} onEnd={handleVideoEnd} key={currentVideo?.id} />
-            <form onSubmit={handleAddVideo}>
-                <input
-                    type="text"
-                    value={newVideoId}
-                    onChange={e => setNewVideoId(e.target.value)}
-                    placeholder="Enter YouTube video ID"
-                    required
-                />
-                <button type="submit">Add to Queue</button>
-            </form>
-            <h2>Up Next:</h2>
-            <ul>
-                {videoQueue.slice(1).map((video, index) => (
-                    <li key={index}>{video.title}</li>
-                ))}
-            </ul>
+            {currentVideo && (
+                 <YouTube
+                 videoId={currentVideo.id}
+                 opts={{ playerVars: { autoplay: 1 } }}
+                 onEnd={handleVideoEnd}
+                 onStateChange={handleStateChange}
+                 onReady={handleReady}
+             />
+            )}            <form onSubmit={handleAddVideo} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
+            <input
+                type="text"
+                value={newVideoId}
+                onChange={e => setNewVideoId(e.target.value)}
+                placeholder="Enter YouTube video ID"
+                required
+                style={{ margin: '10px 0', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+            />
+            <button type="submit" style={{ padding: '10px 20px', backgroundColor: '#007BFF', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Add to Queue</button>
+        </form>
+        <h2>Up Next:</h2>
+        <ul style={{ listStyleType: 'none' }}>
+            {videoQueue.slice(1).map((video, index) => (
+                <li key={index}>{video.title}</li>
+            ))}
+        </ul>
+        <div className="chatbox" style={{ border: '1px solid #ccc', padding: '10px', borderRadius: '5px' }}>
+            {messages.map((message, index) => (
+                <p key={index}><strong>{message.username}:</strong> {message.text}</p>
+            ))}
+            <input
+                value={newMessage}
+                onChange={e => setNewMessage(e.target.value)}
+                placeholder="Type your message here"
+                style={{ margin: '10px 0', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+            />
+            <button onClick={handleNewMessage} style={{ padding: '10px 20px', backgroundColor: '#007BFF', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Send</button>
         </div>
-    );
+    </div>
+);
 }
 
 export default Parties;

@@ -25,6 +25,28 @@ const SearchBar = ({ onAlbumSelect }) => {
         }
     }, [currentAlbum]);
 
+    const addToFavorites = async () => {
+        const username = localStorage.getItem('username');
+
+        const response = await fetch(`http://localhost:5001/users/${username}/favorites`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                albumId: currentAlbum.id, 
+                albumName: currentAlbum.name, 
+                albumCoverArt: currentAlbum.images[0]?.url
+            }),
+        });
+    
+        if (response.ok) {
+            alert('Album added to favorites');
+        } else {
+            alert('Failed to add album to favorites');
+        }
+    };
+
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
     };
@@ -172,7 +194,12 @@ const SearchBar = ({ onAlbumSelect }) => {
                 ))}
             </ul>
         )}
-        <button style={{ backgroundColor: 'white', color: 'black', marginRight: '10px', marginTop: '20px' }} onClick={() => {}}>Set as Favorite ❤️</button>
+        <button 
+    style={{ backgroundColor: 'white', color: 'black', marginRight: '10px', marginTop: '20px' }} 
+    onClick={addToFavorites}
+>
+    Set as Favorite ❤️
+</button>
         <button style={{ backgroundColor: 'white', color: 'black', marginTop: '20px' }} onClick={() => {}}>Add to Playlist 🎵</button>
     </div>
     <div>

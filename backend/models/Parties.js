@@ -34,7 +34,12 @@ const partySchema = new mongoose.Schema({
             type: String,
             required: true
         }
-    }]
+    }],
+
+    currentTime: { // Add a currentTime field to store the current video's playback time
+        type: Number,
+        default: 0
+    }
 });
 
 const Party = mongoose.model('Party', partySchema);

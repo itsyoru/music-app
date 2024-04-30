@@ -8,6 +8,7 @@ import SearchBar from '../Components/SearchBar';
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState(null); // Add this line
 
   const navigate = useNavigate();
 
@@ -33,10 +34,10 @@ const Login = () => {
     if (response.ok) {
       const data = await response.json();
       console.log('Login successful:', data);
-      localStorage.setItem('username', username);
+      setLoginError(null);
       navigate('/');
     } else {
-      console.error('Login failed:', await response.text());
+      setLoginError('Invalid username or password.'); 
     }
   };
 
@@ -52,6 +53,9 @@ const Login = () => {
 </div>
         <div className="form-container">
           <h1 style={{marginBottom: '140px'}}>Log In</h1>
+
+          {loginError && <div className="error">{loginError}</div>}
+
           <form onSubmit={onSubmit}>
             <div>
               <label style={{fontSize: '24px'}}>Username:</label>

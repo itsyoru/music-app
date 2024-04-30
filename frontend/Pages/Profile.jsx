@@ -9,6 +9,8 @@ function Profile() {
     const [email, setEmail] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [reviews, setReviews] = useState([]);
+    const [favoriteAlbums, setFavoriteAlbums] = useState([]);
+
 
     useEffect(() => {
         if (!localStorage.getItem('username')) {
@@ -37,6 +39,17 @@ function Profile() {
 
         fetchUserData();
         fetchUserReviews();
+    }, []);
+
+    useEffect(() => {
+        const fetchFavoriteAlbums = async () => {
+            const response = await fetch(`http://localhost:5001/users/${localStorage.getItem('username')}/favoriteAlbums`);
+            const data = await response.json();
+    
+            setFavoriteAlbums(data);
+        };
+    
+        fetchFavoriteAlbums();
     }, []);
 
     const connectSpotify = async () => {
@@ -77,79 +90,121 @@ function Profile() {
         }
     };
 
+    const randomIndex = Math.floor(Math.random() * favoriteAlbums.length);
+
     return (
-        <div>
-            {isEditing ? (
-                <>
-                    <label style={{ display: 'block', margin: '10px 0' }}>
-                        Username:
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <div style={{ width: '30%', marginRight: '20px', marginLeft: '-50px' }}>
+                <div style={{ marginLeft: '10px', marginTop: '20px' }}>
+                    {isEditing ? (
+                        <>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <label>
+                        Username
+                        <input 
+                            type="text" 
+                            placeholder="Username" 
+                            value={username} 
+                            onChange={(e) => setUsername(e.target.value)} 
                             style={{ display: 'block', margin: '5px 0' }}
                         />
                     </label>
-                    <label style={{ display: 'block', margin: '10px 0' }}>
-                        Bio:
-                        <textarea
-                            value={bio}
-                            onChange={(e) => setBio(e.target.value)}
+                    <label>
+                        Bio
+                        <input 
+                            type="text" 
+                            placeholder="Bio" 
+                            value={bio} 
+                            onChange={(e) => setBio(e.target.value)} 
                             style={{ display: 'block', margin: '5px 0' }}
                         />
                     </label>
-                    <label style={{ display: 'block', margin: '10px 0' }}>
-                        Avatar URL:
-                        <input
-                            type="text"
-                            value={avatar}
-                            placeholder="Avatar URL"
-                            onChange={(e) => setAvatar(e.target.value)}
+                    <label>
+                        Avatar URL
+                        <input 
+                            type="text" 
+                            placeholder="Avatar URL" 
+                            value={avatar} 
+                            onChange={(e) => setAvatar(e.target.value)} 
                             style={{ display: 'block', margin: '5px 0' }}
                         />
                     </label>
                     <button onClick={Save}>Save</button>
-                </>
-            ) : (
-                <>
-                    <h4>{username}</h4>
-                    <img src={avatar} alt="User Avatar" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
-                    <p>Bio: {bio}</p>
-                    <button onClick={Edit}>Edit</button>
-                    <button onClick={connectSpotify}>Connect your account with Spotify</button>
-                    <h2>Recent Activity...</h2>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-                        {reviews.slice(-5).map((review, index) => (
-    <div key={index} style={{ margin: '10px', width: 'calc(20% - 20px)', overflow: 'hidden' }}>
-        <img src={review.albumCoverArt} alt={review.albumName} className="album-cover" />
-        <div>
-            <p style={{ 
-                whiteSpace: 'nowrap', 
-                overflow: 'hidden', 
-                textOverflow: 'ellipsis', 
-                width: '100%' 
-            }}>
-                {review.albumName}
-            </p>
-            <div>
-                <StarRatings
-                    rating={parseInt(review.rating) || 0}
-                    starRatedColor="purple"
-                    numberOfStars={5}
-                    name='rating'
-                    starDimension="20px"
-                    starSpacing="5px"
-                />
-                <p>{review.comment}</p>
+</div>
+                        </>
+                    ) : (
+                        <>
+                            <h4>{username}</h4>
+                            <img src={avatar} alt="User Avatar" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
+                            <p> {bio}</p>
+                            <button onClick={Edit}>Edit</button>
+                            <button onClick={connectSpotify}>Connect your account with Spotify</button>
+                        </>
+                    )}
+                </div>
+                <div style={{ marginTop: '20px', marginLeft: '10px' }}>
+                    <h2>Now Playing...</h2>
+                    <iframe 
+                        src={`https://open.spotify.com/embed/album/${favoriteAlbums[randomIndex]?.albumId}`}                         width="300" 
+                        height="380" 
+                        frameborder="0" 
+                        allowtransparency="true" 
+                        allow="encrypted-media"
+                    ></iframe>
+                </div>
+            </div>
+            <div style={{ width: '70%' }}>
+                <h2>Recent Activity...</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                    {reviews.slice(-5).map((review, index) => (
+                        <div key={index} style={{ margin: '10px', width: 'calc(20% - 20px)', overflow: 'hidden' }}>
+                            <img src={review.albumCoverArt} alt={review.albumName} className="album-cover" />
+                            <div>
+                                <p style={{ 
+                                    whiteSpace: 'nowrap', 
+                                    overflow: 'hidden', 
+                                    textOverflow: 'ellipsis', 
+                                    width: '100%' 
+                                }}>
+                                    {review.albumName}
+                                </p>
+                                <div>
+                                    <StarRatings
+                                        rating={parseInt(review.rating) || 0}
+                                        starRatedColor="purple"
+                                        numberOfStars={5}
+                                        name='rating'
+                                        starDimension="20px"
+                                        starSpacing="5px"
+                                    />
+                                    <p>{review.comment}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <h2>Favorite Albums...</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                    {favoriteAlbums.slice(-5).map((album, index) => (
+                        <div key={index} style={{ margin: '10px', width: 'calc(20% - 20px)', overflow: 'hidden' }}>
+                            <img src={album.albumCoverArt} alt={album.albumName} className="album-cover" />
+                            <div>
+                                <p style={{ 
+                                    whiteSpace: 'nowrap', 
+                                    overflow: 'hidden', 
+                                    textOverflow: 'ellipsis', 
+                                    width: '100%' 
+                                }}>
+                                    {album.albumName}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
-    </div>
-))}
-</div>
-                </>
-            )}
-        </div>
     );
+
 }
 
 export default Profile;

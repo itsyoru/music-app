@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../App.css';
 import Navbar from '../Components/Navbar';
 import SearchBar from '../Components/SearchBar';
-import records from '../assets/tape.jpeg';
+import records from '../assets/sitelogo.png';
 
 function Review({ review }) {
   return (
@@ -50,7 +50,7 @@ function Homepage() {
       </div>
   
       <div style={{ flex: 1 }}>
-        <h1>DEN</h1>
+       <h1>DEN</h1> 
         <p style={{ fontSize: '1.4em' }}>A social networking website for music lovers. </p>  
         <div className="search-bar-container" style={{ zIndex: 1 }}>
           <SearchBar />
