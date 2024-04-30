@@ -45,22 +45,22 @@ const Register = () => {
       <img src={cassetts} alt="cassetts" />
     </div>
     <div className="form-container">
-  <h1 style={{marginBottom: '140px'}}>Register</h1>
+  <h1 style={{marginBottom: '50px', fontSize:'30px', fontFamily:'arial'}}>REGISTER</h1>
   <form onSubmit={onSubmit}>
     <div>
-      <label style={{fontSize: '24px'}}>Username:</label>
+      <label style={{fontSize: '18px'}}>USERNAME:</label>
       <input style={{width: '200px', height: '30px', fontSize: '16px'}} type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
     </div>
     <div>
-      <label style={{fontSize: '24px'}}>Email:</label>
+      <label style={{fontSize: '18px'}}>EMAIL:</label>
       <input style={{width: '200px', height: '30px', fontSize: '16px'}} type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
     </div>
     <div>
-      <label style={{fontSize: '24px'}}>Password:</label>
+      <label style={{fontSize: '18px'}}>PASSWORD:</label>
       <input style={{width: '200px', height: '30px', fontSize: '16px'}} type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
     </div>
     <div>
-      <label style={{fontSize: '24px'}}>Confirm Password:</label>
+      <label style={{fontSize: '18px'}}>CONFIRM PASSWORD:</label>
       <input style={{width: '200px', height: '30px', fontSize: '16px'}} type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
     </div>
     <div>
