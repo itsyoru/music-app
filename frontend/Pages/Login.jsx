@@ -35,6 +35,7 @@ const Login = () => {
       const data = await response.json();
       console.log('Login successful:', data);
       setLoginError(null);
+      localStorage.setItem('username', username); // Add this line
       navigate('/');
     } else {
       setLoginError('Invalid username or password.'); 

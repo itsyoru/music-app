@@ -5,8 +5,8 @@ import logo from '../assets/logo.png';
 const Navbar = () => { 
     return (
         <nav style={{ position: 'fixed', top: 0, left: 0, right: 0 }}>
-            <Link to="/">
-                <img src={logo} alt="Logo" style={{ position: 'absolute', left: '70px', top: '10px', height: '50px' }} />
+           <Link to="/" style={{ position: 'absolute', left: '70px', top: '22px', fontSize: '20px', color: '#616336' }}>
+                DEN
             </Link>
             <ul style={{ display: 'flex', listStyle: 'none', justifyContent: 'center', paddingTop: '10px' }}>
                 <li style={{ marginRight: '10px' }}>

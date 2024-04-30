@@ -2,24 +2,23 @@ import React, { useState, useEffect } from 'react';
 import '../App.css';
 import Navbar from '../Components/Navbar';
 import SearchBar from '../Components/SearchBar';
-import records from '../assets/sitelogo.png';
+import testlogo from '../assets/testlogo.png';
 
 function Review({ review }) {
   return (
-      <div className="review">
+    <div className="review">
       <img src={review.albumCoverArt} alt={review.albumName} className="review-cover-art" /> {/* add class */}
-          <h3>{review.albumName}</h3> {/* display the album name */}
-          <p>{review.comment}</p>
+      <h3>{review.albumName}</h3> {/* display the album name */}
+      <p>{review.comment}</p>
     </div>
   );
 }
 
 function Album({ album }) {
   return (
-    <div> 
-      <img src={album.cover_art} alt={album.name} className="album-cover" />
-      <p className="album-details">{album.name}</p>
-      <p className="album-details" style={{ marginTop: '5px' }}>{album.artists.join(', ')}</p>
+    <div className="album">
+      <img src={album.cover_art} alt={album.name} style={{ width: '100px', height: '100px' }} />
+      <p>{album.name}</p>
     </div>
   );
 }
@@ -41,38 +40,39 @@ function Homepage() {
   }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <div className="feed-container" style={{ overflow: 'hidden', fontSize: '0.8em' , marginTop: '84px' }}>
-        <h2 style={{ marginTop: '14px', fontSize: '1.4em' }}>Latest Reviews</h2>
-        {reviews.map((review, index) => (
-          <Review key={index} review={review} style={{ width: '60%', padding: '10px' }} />
+    <div>
+      <Navbar />
+
+      <div className="albums-container" style={{ position: 'absolute', top: '70px', left: '25px' }}>
+        {albums.map((album, index) => (
+          <Album key={index} album={album} />
         ))}
       </div>
   
-      <div style={{ flex: 1 }}>
-       <h1>DEN</h1> 
-        <p style={{ fontSize: '1.4em' }}>A social networking website for music lovers. </p>  
-        <div className="search-bar-container" style={{ zIndex: 1 }}>
-          <SearchBar />
-        </div>
-    
-        <div style={{
-          backgroundImage: `url(${records})`,
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: '24% auto',
-          backgroundPosition: 'center',
-          width: '200%',
-          height: '50vh', 
-          position: 'relative',
-          left: '-50%'
-        }}>
-          <Navbar />
-        </div>
-    
-        <h2 style={{ marginTop: '20px' }}>What we're listening to...</h2>
-    
-        <div className="albums-container" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', width: '100%', margin: '80px 80px 80px 20px' }}>
-          {albums.map(album => <Album key={album.name} album={album} />)}
+      <div className="search-bar-container" style={{ position: 'fixed', top: '10px', right: '10px' }}>
+        <SearchBar />
+      </div>
+  
+      <div style={{ backgroundImage: `url(https://cdn.dribbble.com/userupload/7562954/file/original-4e1255804fbdc6f4d9f8ca91fe6392b5.gif)`, backgroundRepeat: 'no-repeat', backgroundSize: 'contain', backgroundPosition: 'center', height: '90vh', width: '100vw' }}>
+        <h1></h1>
+      </div>
+  
+      <div className="features-container" style={{ padding: '20px' }}>
+  <h2>DEN ALLOWS YOU TO...</h2>
+  <ul style={{ listStyleType: 'none' }}>
+    <li>Discover new music.</li>
+    <li>Catalogue what you've been listening to.</li>
+    <li>Customize profiles to share with others.</li>
+    <li>Listen to music with friends in parties.</li>
+  </ul>
+</div>
+  
+      <div className="feed-container" style={{ overflow: 'hidden', fontSize: '0.8em', marginTop: '60px' }}>
+        <h2 style={{ marginTop: '14px', fontSize: '1.4em' }}>Latest Reviews</h2>
+        <div className='reviews-wrapper'>
+          {reviews.map((review, index) => (
+            <Review key={index} review={review} style={{ width: '60%', padding: '10px' }} />
+          ))}
         </div>
       </div>
     </div>

@@ -11,9 +11,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -22,6 +24,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -42,8 +45,8 @@
 }
 
 .album-cover {
-  width: 150px; 
-  height: auto; 
+  width: 150px;
+  height: auto;
 }
 
 .album-details {
@@ -60,16 +63,17 @@
 }
 
 .search-bar-container {
-  position: absolute;
-  top: 0;
-  right: 0;
+  position: fixed;
+  top: 20px;
+  right: 70px;
   padding: 10px;
+  z-index: 5;
 }
 
 .search-button {
-  width: 76px;  
-  height: 42px; 
-  font-size: 10px; 
+  width: 76px;
+  height: 42px;
+  font-size: 10px;
   background-color: #f466ad;
 }
 
@@ -104,32 +108,59 @@
 
 .form-container label {
   display: inline-block;
-  width: 200px; /* Increase the width to accommodate longer labels */
-  margin-right: 10px; /* Add some space between the label and the input field */
+  width: 200px;
+  /* Increase the width to accommodate longer labels */
+  margin-right: 10px;
+  /* Add some space between the label and the input field */
   font-size: 18px;
 }
 
 .form-container input[type="submit"] {
-  padding: 10px 20px; /* Increase the size of the button */
-  background-color: #f466ad; /* Change the background color */
-  border: none; /* Remove the default border */
-  color: #1c1a22; /* Change the text color to white */
-  font-size: 22px; /* Increase the font size */
-  cursor: pointer; /* Change the cursor to a hand when hovering over the button */
+  padding: 10px 20px;
+  /* Increase the size of the button */
+  background-color: #f466ad;
+  /* Change the background color */
+  border: none;
+  /* Remove the default border */
+  color: #1c1a22;
+  /* Change the text color to white */
+  font-size: 22px;
+  /* Increase the font size */
+  cursor: pointer;
+  /* Change the cursor to a hand when hovering over the button */
 }
 
 .feed-container {
-  position: absolute;
+  /* position: absolute;
   left: 0;
-  top: 0;
-  width: 18%; /* adjust this to change the width of the feed */
-  height: 90vh; /* make the feed take up the full height of the viewport */
+  top: 0; */
+  /* width: 18%;  */
+  /* adjust this to change the width of the feed */
+  /* height: 90vh; */
+  /* make the feed take up the full height of the viewport */
+  background-color: #fff;
+}
+
+.reviews-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
 }
 
 .review-cover-art {
-  width: 100px; /* adjust as needed */
-  height: 100px; /* adjust as needed */
+  width: 160px;
+  /* adjust as needed */
+  height: auto;
+  /* adjust as needed */
 }
 
-
-
+.banner {
+  background-image: url(https://cdn.digitaldjtips.com/app/uploads/2020/06/30094959/dj-playing-whole-track.jpg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 100vh;
+  position: relative;
+  top: -66px;
+  z-index: 0;
+}

@@ -4,8 +4,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: #303d40;
-  background: #caccfa;
+  color: #20544d;
+  background: linear-gradient(to right, #fbf8f9, #f4ebef);
 
 
 
@@ -26,8 +26,8 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  /* display: flex;
+  place-items: center; */
   min-width: 320px;
   min-height: 100vh;
 }
