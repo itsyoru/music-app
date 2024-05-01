@@ -41,9 +41,9 @@ const Register = () => {
 
   return (
     <div className="register-container">
-    <div className="image-container">
+    {/* <div className="image-container">
       <img src={cassetts} alt="cassetts" />
-    </div>
+    </div> */}
     <div className="form-container">
   <h1 style={{marginBottom: '50px', fontSize:'30px', fontFamily:'arial'}}>REGISTER</h1>
   <form onSubmit={onSubmit}>

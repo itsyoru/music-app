@@ -75,7 +75,7 @@ function CreateOrJoinAParty() {
     };
 
     return (
-        <div style={{ padding: '20px' }}>
+        <div style={{ padding: '20px', marginTop: '60px' }}>
             <form onSubmit={handleCreateParty} style={{ marginBottom: '20px' }}>
                 <input type="text" value={partyNameToCreate} onChange={e => setPartyNameToCreate(e.target.value)} placeholder="Enter party name" required style={{ marginRight: '10px', padding: '10px' }} />
                 <button type="submit" style={{ padding: '10px', backgroundColor: '#4CAF50', color: 'white', border: 'none', cursor: 'pointer' }}>Create Party</button>

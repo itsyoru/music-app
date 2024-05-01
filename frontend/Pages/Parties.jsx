@@ -143,7 +143,7 @@ function Parties() {
     };
 
     return (
-        <div>
+        <div className='party-section'>
             <h1>Party Room</h1>
             <h2>Now Playing: {currentVideo?.title}</h2>
             {currentVideo && (

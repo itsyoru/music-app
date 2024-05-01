@@ -45,10 +45,10 @@ function Profile() {
         const fetchFavoriteAlbums = async () => {
             const response = await fetch(`http://localhost:5001/users/${localStorage.getItem('username')}/favoriteAlbums`);
             const data = await response.json();
-    
+
             setFavoriteAlbums(data);
         };
-    
+
         fetchFavoriteAlbums();
     }, []);
 
@@ -58,7 +58,7 @@ function Profile() {
             const redirectUri = encodeURIComponent('http://localhost:5173/profile');
             const scopes = encodeURIComponent('streaming user-read-email user-read-private');
             const url = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${scopes}&redirect_uri=${redirectUri}`;
-    
+
             window.location.href = url;
         } catch (error) {
             console.error(error);
@@ -93,44 +93,44 @@ function Profile() {
     const randomIndex = Math.floor(Math.random() * favoriteAlbums.length);
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <div style={{ width: '30%', marginRight: '20px', marginLeft: '-50px' }}>
-                <div style={{ marginLeft: '10px', marginTop: '20px' }}>
+        <div className='profile-details'>
+            <div>
+                <div>
                     {isEditing ? (
                         <>
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <label>
-                        Username
-                        <input 
-                            type="text" 
-                            placeholder="Username" 
-                            value={username} 
-                            onChange={(e) => setUsername(e.target.value)} 
-                            style={{ display: 'block', margin: '5px 0' }}
-                        />
-                    </label>
-                    <label>
-                        Bio
-                        <input 
-                            type="text" 
-                            placeholder="Bio" 
-                            value={bio} 
-                            onChange={(e) => setBio(e.target.value)} 
-                            style={{ display: 'block', margin: '5px 0' }}
-                        />
-                    </label>
-                    <label>
-                        Avatar URL
-                        <input 
-                            type="text" 
-                            placeholder="Avatar URL" 
-                            value={avatar} 
-                            onChange={(e) => setAvatar(e.target.value)} 
-                            style={{ display: 'block', margin: '5px 0' }}
-                        />
-                    </label>
-                    <button onClick={Save}>Save</button>
-</div>
+                                <label>
+                                    Username
+                                    <input
+                                        type="text"
+                                        placeholder="Username"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        style={{ display: 'block', margin: '5px 0' }}
+                                    />
+                                </label>
+                                <label>
+                                    Bio
+                                    <input
+                                        type="text"
+                                        placeholder="Bio"
+                                        value={bio}
+                                        onChange={(e) => setBio(e.target.value)}
+                                        style={{ display: 'block', margin: '5px 0' }}
+                                    />
+                                </label>
+                                <label>
+                                    Avatar URL
+                                    <input
+                                        type="text"
+                                        placeholder="Avatar URL"
+                                        value={avatar}
+                                        onChange={(e) => setAvatar(e.target.value)}
+                                        style={{ display: 'block', margin: '5px 0' }}
+                                    />
+                                </label>
+                                <button onClick={Save}>Save</button>
+                            </div>
                         </>
                     ) : (
                         <>
@@ -144,34 +144,34 @@ function Profile() {
                 </div>
                 <div style={{ marginTop: '20px', marginLeft: '10px' }}>
                     <h2>Now Playing...</h2>
-                    <iframe 
-                        src={`https://open.spotify.com/embed/album/${favoriteAlbums[randomIndex]?.albumId}`}                         width="300" 
-                        height="380" 
-                        frameborder="0" 
-                        allowtransparency="true" 
+                    <iframe
+                        src={`https://open.spotify.com/embed/album/${favoriteAlbums[randomIndex]?.albumId}`} width="300"
+                        height="380"
+                        frameborder="0"
+                        allowtransparency="true"
                         allow="encrypted-media"
                     ></iframe>
                 </div>
             </div>
-            <div style={{ width: '70%' }}>
+            <div>
                 <h2>Recent Activity...</h2>
-                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '20px' }}>
                     {reviews.slice(-5).map((review, index) => (
                         <div key={index} style={{ margin: '10px', width: 'calc(20% - 20px)', overflow: 'hidden' }}>
                             <img src={review.albumCoverArt} alt={review.albumName} className="album-cover" />
                             <div>
-                                <p style={{ 
-                                    whiteSpace: 'nowrap', 
-                                    overflow: 'hidden', 
-                                    textOverflow: 'ellipsis', 
-                                    width: '100%' 
+                                <p style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    width: '100%'
                                 }}>
                                     {review.albumName}
                                 </p>
                                 <div>
                                     <StarRatings
                                         rating={parseInt(review.rating) || 0}
-                                        starRatedColor="purple"
+                                        starRatedColor="gold"
                                         numberOfStars={5}
                                         name='rating'
                                         starDimension="20px"
@@ -184,16 +184,16 @@ function Profile() {
                     ))}
                 </div>
                 <h2>Favorite Albums...</h2>
-                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '20px' }}>
                     {favoriteAlbums.slice(-5).map((album, index) => (
                         <div key={index} style={{ margin: '10px', width: 'calc(20% - 20px)', overflow: 'hidden' }}>
                             <img src={album.albumCoverArt} alt={album.albumName} className="album-cover" />
                             <div>
-                                <p style={{ 
-                                    whiteSpace: 'nowrap', 
-                                    overflow: 'hidden', 
-                                    textOverflow: 'ellipsis', 
-                                    width: '100%' 
+                                <p style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    width: '100%'
                                 }}>
                                     {album.albumName}
                                 </p>

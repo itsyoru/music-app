@@ -38,39 +38,39 @@ const Login = () => {
       localStorage.setItem('username', username); // Add this line
       navigate('/');
     } else {
-      setLoginError('Invalid username or password.'); 
+      setLoginError('Invalid username or password.');
     }
   };
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <div style={{ position: 'absolute', top: 0, right: 0 }}>
         <SearchBar />
       </div>
       <div className="register-container">
-      <div className="image-container">
-  <img src={headphones} alt="headphones" style={{width: '70%', height: 'auto', marginLeft: '10%'}} />
-</div>
+        {/* <div className="image-container">
+          <img src={headphones} alt="headphones" style={{ width: '70%', height: 'auto', marginLeft: '10%' }} />
+        </div> */}
         <div className="form-container">
-          <h1 style={{marginBottom: '140px'}}>Log In</h1>
+          <h1 style={{ marginBottom: '140px' }}>Log In</h1>
 
           {loginError && <div className="error">{loginError}</div>}
 
           <form onSubmit={onSubmit}>
             <div>
-              <label style={{fontSize: '24px'}}>Username:</label>
-              <input style={{width: '200px', height: '30px', fontSize: '16px'}} type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+              <label style={{ fontSize: '24px' }}>Username:</label>
+              <input style={{ width: '200px', height: '30px', fontSize: '16px' }} type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
             </div>
             <div>
-              <label style={{fontSize: '24px'}}>Password:</label>
-              <input style={{width: '200px', height: '30px', fontSize: '16px'}} type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <label style={{ fontSize: '24px' }}>Password:</label>
+              <input style={{ width: '200px', height: '30px', fontSize: '16px' }} type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <div>
               <input type="submit" value="Log In" />
             </div>
           </form>
-          <div style={{marginTop: '20px'}}>
+          <div style={{ marginTop: '20px' }}>
             <p>Don't have an account? <Link to="/register">Register here!</Link></p>
           </div>
         </div>
