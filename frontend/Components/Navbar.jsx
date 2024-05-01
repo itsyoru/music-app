@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo.png';
+import logo from '../assets/testlogo.png';
 
 const Navbar = () => { 
     return (
         <nav style={{ position: 'fixed', top: 0, left: 0, right: 0 }}>
-           <Link to="/" style={{ position: 'absolute', left: '70px', top: '22px', fontSize: '20px', color: '#616336' }}>
-                D E N
+           <Link className='logo' to="/" style={{ position: 'absolute', left: '45px', top: '22px', fontSize: '20px', color: '#616336' }}>
+                <img src={logo} alt="Logo" />
             </Link>
             <ul style={{ display: 'flex', listStyle: 'none', justifyContent: 'center', paddingTop: '10px' }}>
                 <li style={{ marginRight: '13px' }}>
