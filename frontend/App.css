@@ -5,9 +5,11 @@
   text-align: center;
 }
 
+nav {
+  z-index: 1;
+}
+
 .logo {
-  height: 6em;
-  padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
@@ -186,3 +188,10 @@
   z-index: 0;
 }
 
+.logo img{
+  width: 100px;
+}
+
+.profile-details, .party-section {
+  margin-top: 60px;
+}
