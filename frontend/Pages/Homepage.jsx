@@ -41,7 +41,7 @@ function Homepage() {
 
   return (
     <div>
-      {/* <Navbar /> */}
+       <Navbar /> 
 
       <div className="albums-container" style={{ position: 'absolute', top: '120px', left: '25px' }}>
         {albums.map((album, index) => (
