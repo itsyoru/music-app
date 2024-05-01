@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import SearchBar from '../Components/SearchBar';
 import StarRatings from 'react-star-ratings';
+import Navbar from '../Components/Navbar';
 
 const Browse = () => {
     const [newReleases, setNewReleases] = useState([]);
@@ -121,6 +122,8 @@ const Browse = () => {
     };
 
     return (
+        <>
+        <Navbar />
         <div>
 
             <div className="search-bar-container" style={{ position: 'fixed', top: '10px', right: '10px' }}>
@@ -247,6 +250,7 @@ const Browse = () => {
                 </div>
             </Modal>
         </div>
+        </>
     );
 };
 

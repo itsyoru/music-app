@@ -44,10 +44,9 @@ const Login = () => {
 
   return (
     <>
-      {/* <Navbar /> */}
-      <div style={{ position: 'absolute', top: 0, right: 0 }}>
-        <SearchBar />
-      </div>
+
+<Navbar /> 
+      
       <div className="register-container">
         {/* <div className="image-container">
           <img src={headphones} alt="headphones" style={{ width: '70%', height: 'auto', marginLeft: '10%' }} />

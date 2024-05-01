@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../App.css';
 import StarRatings from 'react-star-ratings';
+import Navbar from '../Components/Navbar';
 
 function Profile() {
     const [username, setUsername] = useState('');
@@ -93,6 +94,9 @@ function Profile() {
     const randomIndex = Math.floor(Math.random() * favoriteAlbums.length);
 
     return (
+
+        <>
+        <Navbar />
         <div className='profile-details'>
             <div>
                 <div>
@@ -207,6 +211,7 @@ function Profile() {
                 </div>
             </div>
         </div>
+        </>
     );
 
 }

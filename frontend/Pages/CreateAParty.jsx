@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../Components/Navbar';
 
 
 function CreateOrJoinAParty() {
@@ -75,6 +76,10 @@ function CreateOrJoinAParty() {
     };
 
     return (
+
+        <>
+        <Navbar />
+
         <div style={{ padding: '20px', marginTop: '60px' }}>
             <form onSubmit={handleCreateParty} style={{ marginBottom: '20px' }}>
                 <input type="text" value={partyNameToCreate} onChange={e => setPartyNameToCreate(e.target.value)} placeholder="Enter party name" required style={{ marginRight: '10px', padding: '10px' }} />
@@ -96,6 +101,7 @@ function CreateOrJoinAParty() {
     </ul>
 </div>
         </div>
+        </>
     );
 }
 

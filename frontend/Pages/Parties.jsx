@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import YouTube from 'react-youtube';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import Navbar from '../Components/Navbar';
 
 function Parties() {
     const { partyName } = useParams();
@@ -143,6 +144,10 @@ function Parties() {
     };
 
     return (
+
+        <>
+        <Navbar />
+
         <div className='party-section'>
             <h1>Party Room</h1>
             <h2>Now Playing: {currentVideo?.title}</h2>
@@ -184,6 +189,7 @@ function Parties() {
             <button onClick={handleNewMessage} style={{ padding: '10px 20px', backgroundColor: '#007BFF', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Send</button>
         </div>
     </div>
+    </>
 );
 }
 
