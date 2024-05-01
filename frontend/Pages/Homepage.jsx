@@ -3,6 +3,7 @@ import '../App.css';
 import Navbar from '../Components/Navbar';
 import SearchBar from '../Components/SearchBar';
 import StarRatings from 'react-star-ratings';
+import Footer from '../Components/Footer';
 
 function Review({ review }) {
   return (
@@ -12,7 +13,7 @@ function Review({ review }) {
       <p>{review.comment}</p>
       <StarRatings
         rating={parseInt(review.rating) || 0}
-        starRatedColor="purple"
+        starRatedColor="gold"
         numberOfStars={5}
         name='rating'
         starDimension="20px"
@@ -93,6 +94,7 @@ function Homepage() {
     ))}
   </div>
 </div>
+<Footer />
     </div>
   );
 }

@@ -152,8 +152,8 @@ const SearchBar = ({ onAlbumSelect }) => {
                 value={searchTerm}
                 onChange={handleSearch}
                 placeholder="Search for an album/artist/track here!"
-                style={{ width: '340px', height: '30px', fontSize: '18px' }}
-            />
+                style={{ width: '300px', height: '30px', fontSize: '18px', backgroundColor: 'white', color: '#20544d' }}
+                />
 
             {results.map((album, index) => (
                 <div key={index} onClick={() => {
@@ -173,7 +173,7 @@ const SearchBar = ({ onAlbumSelect }) => {
                     content: {
                         display: 'flex',
                         justifyContent: 'space-between',
-                        backgroundColor: '#c8b4fd',
+                        backgroundColor: '#fffff',
                         padding: '20px'
                     }
                 }}

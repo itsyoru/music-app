@@ -175,7 +175,7 @@ const Browse = () => {
                     content: {
                         display: 'flex',
                         justifyContent: 'space-between',
-                        backgroundColor: '#c8b4fd',
+                        backgroundColor: '#fffff',
                         padding: '20px'
                     }
                 }}

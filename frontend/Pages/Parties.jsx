@@ -26,9 +26,11 @@ function Parties() {
             intervalRef.current = setInterval(() => {
                 const currentTime = event.target.getCurrentTime();
                 setCurrentTime(currentTime);
-
+    
                 axios.post(`http://localhost:5001/party/${partyName}/currentTime`, { currentTime });
             }, 1000);
+        } else if (event.data === YouTube.PlayerState.ENDED) {
+            handleVideoEnd(); // call your handleVideoEnd function here
         } else {
             clearInterval(intervalRef.current);
         }
