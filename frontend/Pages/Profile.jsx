@@ -137,8 +137,12 @@ function Profile() {
                             <h4>{username}</h4>
                             <img src={avatar} alt="User Avatar" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
                             <p> {bio}</p>
-                            <button onClick={Edit}>Edit</button>
-                            <button onClick={connectSpotify}>Connect your account with Spotify</button>
+                            <div style={{ marginBottom: '10px' }}>
+                            <button style={{ backgroundColor: '#1DB954', color: '#fff', borderRadius: '25px', padding: '10px 20px', cursor: 'pointer' }} onClick={Edit}>Edit</button>
+                        </div>
+                        <div>
+                            <button style={{ backgroundColor: '#1DB954', color: '#fff', borderRadius: '25px', padding: '10px 20px', cursor: 'pointer' }} onClick={connectSpotify}>Connect your account with Spotify</button>
+                        </div>
                         </>
                     )}
                 </div>

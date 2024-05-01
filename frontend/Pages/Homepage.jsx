@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../App.css';
 import Navbar from '../Components/Navbar';
 import SearchBar from '../Components/SearchBar';
-import testlogo from '../assets/testlogo.png';
+import StarRatings from 'react-star-ratings';
 
 function Review({ review }) {
   return (
@@ -10,6 +10,14 @@ function Review({ review }) {
       <img src={review.albumCoverArt} alt={review.albumName} className="review-cover-art" /> {/* add class */}
       <h3>{review.albumName}</h3> {/* display the album name */}
       <p>{review.comment}</p>
+      <StarRatings
+        rating={parseInt(review.rating) || 0}
+        starRatedColor="purple"
+        numberOfStars={5}
+        name='rating'
+        starDimension="20px"
+        starSpacing="5px"
+      />
     </div>
   );
 }
