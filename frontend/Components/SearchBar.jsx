@@ -168,7 +168,7 @@ const SearchBar = ({ onAlbumSelect }) => {
 
             <Modal
                 isOpen={modalIsOpen}
-                onRequestClose={closeModal}
+                onRequestClose={() => setModalIsOpen(false)}
                 style={{
                     content: {
                         display: 'flex',
@@ -209,7 +209,7 @@ const SearchBar = ({ onAlbumSelect }) => {
                             Rating:
                             <StarRatings
                                 rating={parseInt(reviewForm.rating) || 0}
-                                starRatedColor="blue"
+                                starRatedColor="gold"
                                 changeRating={(newRating) => setReviewForm({ ...reviewForm, rating: newRating })}
                                 numberOfStars={5}
                                 name='rating'

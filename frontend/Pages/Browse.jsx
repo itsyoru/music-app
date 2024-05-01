@@ -208,7 +208,7 @@ const Browse = () => {
                             Rating:
                             <StarRatings
                                 rating={parseInt(reviewForm.rating) || 0}
-                                starRatedColor="purple"
+                                starRatedColor="gold"
                                 changeRating={(newRating) => setReviewForm({ ...reviewForm, rating: newRating })}
                                 numberOfStars={5}
                                 name='rating'

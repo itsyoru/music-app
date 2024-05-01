@@ -76,13 +76,23 @@ function Homepage() {
       </div>
 
       <div className="feed-container" style={{ overflow: 'hidden', fontSize: '0.8em', marginTop: '60px' }}>
-        <h2 style={{ marginTop: '14px', fontSize: '1.4em', fontFamily: 'monospace' }}>LATEST REVIEWS</h2>
-        <div className='reviews-wrapper'>
-          {reviews.map((review, index) => (
-            <Review key={index} review={review} style={{ width: '60%', padding: '10px' }} />
-          ))}
-        </div>
+  <h2 style={{ marginTop: '14px', fontSize: '1.4em', fontFamily: 'monospace' }}>LATEST REVIEWS</h2>
+  <div className='reviews-wrapper' style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '20px' }}>
+    {reviews.map((review, index) => (
+      <div key={index} style={{ margin: '10px', width: 'calc(20% - 20px)', overflow: 'hidden' }}>
+        <Review review={review} />
+        <p style={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          width: '100%'
+        }}>
+          {review.albumName}
+        </p>
       </div>
+    ))}
+  </div>
+</div>
     </div>
   );
 }
