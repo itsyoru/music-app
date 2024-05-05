@@ -3,9 +3,9 @@ import mongoose from 'mongoose';
 import User from './models/userModel.js';
 import cors from 'cors';
 import Review from './models/Reviews.js';
-import http from 'http';
-import { Server } from 'socket.io';
 import Party from './models/Parties.js';
+import { getValidToken } from './getToken.js'; 
+import axios from 'axios';
 
 const app = express();
 app.use(cors()); 
@@ -301,6 +301,268 @@ app.get('/users/:username/favoriteAlbums', async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+
+app.get('/new-releases', async (req, res) => { 
+    const accessToken = await getValidToken(); 
+
+    axios({
+        method: 'get',
+        url: 'https://api.spotify.com/v1/browse/new-releases',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
+    .then(response => {
+        const newReleasesData = response.data.albums.items;
+        const firstSixReleases = newReleasesData.slice(0, 6); // Get the first 6 items
+        const formattedData = firstSixReleases.map(album => ({
+            id: album.id,
+            name: album.name,
+            artists: album.artists.map(artist => artist.name),
+            release_date: album.release_date,
+            cover_art: album.images[0].url,
+            album_type: album.album_type // Add this line
+
+        }));
+        res.send(formattedData);
+    })
+    .catch(error => {
+        res.status(500).send(error.toString());
+    });
+});
+
+const albumIds = ['79dL7FLiJFOO0EoehUHQBv', '0tpIUAzCeUkoV4u2r5NrQr', '6tG8sCK4htJOLjlWwb7gZB', '3mH6qwIy9crq0I9YQbOuDf', '1VCTWaze9kuY5IDlbtR5p0', '7wJTn94PWzZ3zE0lg3qhld']; // replace with your actual album IDs
+
+app.get('/albums', async (req, res) => {
+  try {
+    const accessToken = await getValidToken();
+    const responses = await Promise.all(albumIds.map(albumId => 
+      axios({
+        method: 'get',
+        url: `https://api.spotify.com/v1/albums/${albumId}`,
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      })
+    ));
+
+    const formattedData = responses.map(response => {
+      const albumData = response.data;
+      return {
+        name: albumData.name,
+        artists: albumData.artists.map(artist => artist.name),
+        release_date: albumData.release_date,
+        tracks: albumData.tracks.items.map(track => track.name),
+        cover_art: albumData.images[0].url
+      };
+    });
+    res.send(formattedData);
+  } catch (error) {
+    res.status(500).send(error.toString());
+  }
+});
+
+app.get('/top-ten', async (req, res) => { 
+  const accessToken = await getValidToken(); 
+
+  axios({
+      method: 'get',
+      url: 'https://api.spotify.com/v1/playlists/37i9dQZEVXbLp5XoPON0wI',
+      headers: {
+          'Authorization': `Bearer ${accessToken}`
+      }
+  })
+  .then(response => {
+      const topTenData = response.data.tracks.items;
+      const formattedData = topTenData.map(track => ({
+          id: track.track.id,
+          name: track.track.name,
+          artists: track.track.artists.map(artist => artist.name),
+          album: track.track.album.name,
+          cover_art: track.track.album.images[0].url,
+      }));
+      res.send(formattedData);
+  })
+  .catch(error => {
+      res.status(500).send(error.toString());
+  });
+});
+
+app.get('/albums/:id/tracks', async (req, res) => {
+  const accessToken = await getValidToken();
+  const albumId = req.params.id;
+
+  axios({
+      method: 'get',
+      url: `https://api.spotify.com/v1/albums/${albumId}/tracks`,
+      headers: {
+          'Authorization': `Bearer ${accessToken}`
+      }
+  })
+  .then(response => {
+      const trackData = response.data.items;
+      const formattedData = trackData.map(track => ({
+          id: track.id,
+          name: track.name,
+          artists: track.artists.map(artist => artist.name),
+      }));
+      res.json(formattedData);
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'An error occurred while fetching track data.' });
+  });
+});
+
+app.get('/artist-albums', async (req, res) => {
+  const accessToken = await getValidToken();
+  const artistId = '5K4W6rqBFWDnAN6FQUkS6x'; // Kanye West's Spotify Artist ID
+
+  axios({
+      method: 'get',
+      url: `https://api.spotify.com/v1/artists/${artistId}/albums`,
+      headers: {
+          'Authorization': `Bearer ${accessToken}`
+      },
+      params: {
+          include_groups: 'album', // Only include albums (not singles, compilations, etc.)
+          limit: 10 // Get up to 50 albums
+      }
+  })
+  .then(response => {
+      const albumsData = response.data.items;
+      const formattedData = albumsData.map(album => ({
+          id: album.id,
+          name: album.name,
+          artists: album.artists.map(artist => artist.name),
+          release_date: album.release_date,
+          cover_art: album.images[0].url,
+          album_type: album.album_type
+      }));
+      res.send(formattedData);
+  })
+  .catch(error => {
+      res.status(500).send(error.toString());
+  });
+});
+
+app.get('/token', async (req, res) => {
+  try {
+    const token = await getValidToken();
+    res.json({ token });
+  } catch (error) {
+    res.status(500).json({ error: error.toString() });
+  }
+});
+
+app.post('/party/:name/chat', async (req, res) => {
+    try {
+      const party = await Party.findOne({ name: req.params.name });
+      if (!party) {
+        return res.status(404).send();
+      }
+  
+      // Find the user by username
+      const user = await User.findOne({ username: req.body.user });
+      if (!user) {
+        return res.status(404).send('User not found');
+      }
+  
+      // Push the new message into the chat array
+      party.chat.push({
+        user: req.body.user,
+        message: req.body.message,
+        timestamp: Date.now()
+      });
+  
+      await party.save();
+      res.status(201).send(party);
+    } catch (error) {
+      res.status(500).send(error.toString());
+    }
+  });
+
+  app.get('/party/:name/chat', async (req, res) => {
+    try {
+      const party = await Party.findOne({ name: req.params.name });
+      if (!party) {
+        return res.status(404).send();
+      }
+      res.status(200).send(party.chat);
+    } catch (error) {
+      res.status(500).send(error.toString());
+    }
+  });
+
+  const rapalbums = ['4eLPsYPBmXABThSJ821sqY', '5zi7WsKlIiUXv09tbGLKsE', 
+  '42WVQWuf1teDysXiOupIZt', '4Q7cRXio6mF2ImVUCcezPO', '7dAm8ShwJLFm9SaJ6Yc58O', 
+  '7IyoGB8J31fvQDwGtHAq9m', '2yXnY2NiaZk9QiJJittS81', '3bSNhnaQQXpC639OQ4pMyP',
+'0UMMIkurRUmkruZ3KGBLtG', '2Ek1q2haOnxVqhvVKqMvJe']; 
+
+app.get('/rapalbums', async (req, res) => {
+    try {
+      const accessToken = await getValidToken();
+      const responses = await Promise.all(rapalbums.map(albumId => 
+        axios({
+          method: 'get',
+          url: `https://api.spotify.com/v1/albums/${albumId}`,
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        })
+      ));
+  
+      const formattedData = responses.map(response => {
+        const albumData = response.data;
+        return {
+          id: albumData.id,
+          album_type: albumData.album_type,
+          name: albumData.name,
+          artists: albumData.artists.map(artist => artist.name),
+          release_date: albumData.release_date,
+          tracks: albumData.tracks.items.map(track => track.name),
+          cover_art: albumData.images[0].url
+        };
+      });
+      res.send(formattedData);
+    } catch (error) {
+      res.status(500).send(error.toString());
+    }
+  });
+
+  const popalbums = ['1hmlhl74JfLyUqmqtCwvFb', '3q149oaxOiW9EoHXqM5nvO', 
+  '2IUoE0jqkViW6gGfqLcjG2', '3KGVOGmIbinlrR97aFufGE', '5Csjy4XeA7KnizkhIvI7y2']; 
+
+  app.get('/popalbums', async (req, res) => {
+    try {
+      const accessToken = await getValidToken();
+      const responses = await Promise.all(popalbums.map(albumId => 
+        axios({
+          method: 'get',
+          url: `https://api.spotify.com/v1/albums/${albumId}`,
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        })
+      ));
+  
+      const formattedData = responses.map(response => {
+        const albumData = response.data;
+        return {
+          id: albumData.id,
+          album_type: albumData.album_type,
+          name: albumData.name,
+          artists: albumData.artists.map(artist => artist.name),
+          release_date: albumData.release_date,
+          tracks: albumData.tracks.items.map(track => track.name),
+          cover_art: albumData.images[0].url
+        };
+      });
+      res.send(formattedData);
+    } catch (error) {
+      res.status(500).send(error.toString());
+    }
+  });
 
 const port = process.env.PORT || 5001;
 app.listen(port, () => console.log(`Server is running on port ${port}`));

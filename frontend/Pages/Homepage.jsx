@@ -37,7 +37,7 @@ function Homepage() {
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3000/albums')
+    fetch('http://localhost:5001/albums')
       .then(response => response.json())
       .then(data => setAlbums(data))
       .catch(error => console.error('Error:', error));
@@ -53,6 +53,7 @@ function Homepage() {
        <Navbar /> 
 
       <div className="albums-container" style={{ position: 'absolute', top: '120px', left: '25px' }}>
+      <div style={{ marginBottom: '20px' }}>Trending on DEN...</div>
         {albums.map((album, index) => (
           <Album key={index} album={album} />
         ))}

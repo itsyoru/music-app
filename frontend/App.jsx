@@ -23,6 +23,8 @@ const App = ()  => {
         <Route path="/Parties/:partyName" element={<Parties />} /> {/* Update this line */}
         <Route path="/Partychat/:roomId" element={<Partychat/>}/>
         <Route path="/CreateAParty" element={<CreateAParty />} />
+        <Route path="/profile/:username" element={<Profile />} />
+
       </Routes>
     </Router>
   );

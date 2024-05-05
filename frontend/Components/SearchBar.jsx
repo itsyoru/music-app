@@ -53,7 +53,7 @@ const SearchBar = ({ onAlbumSelect }) => {
 
     const openModal = async (album) => {
         try {
-            const tokenResponse = await fetch('http://localhost:3001/token');
+            const tokenResponse = await fetch('http://localhost:5001/token');
             const tokenData = await tokenResponse.json();
             const accessToken = tokenData.token;
 
@@ -112,7 +112,7 @@ const SearchBar = ({ onAlbumSelect }) => {
 
     const searchSpotify = async () => {
         try {
-            const tokenResponse = await fetch('http://localhost:3001/token');
+            const tokenResponse = await fetch('http://localhost:5001/token');
             const tokenData = await tokenResponse.json();
             const accessToken = tokenData.token;
 
@@ -151,20 +151,33 @@ const SearchBar = ({ onAlbumSelect }) => {
                 type="text"
                 value={searchTerm}
                 onChange={handleSearch}
-                placeholder="Search for an album/artist/track here!"
-                style={{ width: '300px', height: '30px', fontSize: '18px', backgroundColor: 'white', color: '#20544d' }}
-                />
-
-            {results.map((album, index) => (
-                <div key={index} onClick={() => {
-                    openModal(album);
-                    props.onAlbumSelect(album.id);
-                }}>
-                    <img src={album.images[2]?.url} alt={album.name} style={{ width: '50px', height: '50px' }} /> {/* Display the smallest image */}
-                    <p>{album.name}</p>
-                    <p>{album.artists.map(artist => artist.name).join(', ')}</p>
-                </div>
-            ))}
+                placeholder="Search for an album/artist here!"
+                style={{ width: '280px', height: '26px', fontSize: '18px', backgroundColor: 'white', color: '#20544d' }}
+            />
+    
+            {results.length > 0 && (
+                <table style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)' }}>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Album</th>
+                            <th>Artist</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {results.map((album, index) => (
+                            <tr key={index} onClick={() => {
+                                openModal(album);
+                                props.onAlbumSelect(album.id);
+                            }}>
+                                <td><img src={album.images[2]?.url} alt={album.name} style={{ width: '50px', height: '50px' }} /></td> {/* Display the smallest image */}
+                                <td>{album.name}</td>
+                                <td>{album.artists.map(artist => artist.name).join(', ')}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
 
             <Modal
                 isOpen={modalIsOpen}

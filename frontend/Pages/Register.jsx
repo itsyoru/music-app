@@ -52,19 +52,19 @@ const Register = () => {
           <form onSubmit={onSubmit}>
             <div>
               <label style={{fontSize: '18px'}}>USERNAME:</label>
-              <input style={{width: '200px', height: '30px', fontSize: '16px', backgroundColor: 'white'}} type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+              <input style={{width: '200px', height: '30px', fontSize: '16px', backgroundColor: 'white', color: 'black'}} type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
             </div>
             <div>
               <label style={{fontSize: '18px'}}>EMAIL:</label>
-              <input style={{width: '200px', height: '30px', fontSize: '16px', backgroundColor: 'white'}} type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <input style={{width: '200px', height: '30px', fontSize: '16px', backgroundColor: 'white', color: 'black'}} type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div>
               <label style={{fontSize: '18px'}}>PASSWORD:</label>
-              <input style={{width: '200px', height: '30px', fontSize: '16px', backgroundColor: 'white'}} type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <input style={{width: '200px', height: '30px', fontSize: '16px', backgroundColor: 'white', color: 'black'}} type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <div>
               <label style={{fontSize: '18px'}}>CONFIRM PASSWORD:</label>
-              <input style={{width: '200px', height: '30px', fontSize: '16px', backgroundColor: 'white'}} type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+              <input style={{width: '200px', height: '30px', fontSize: '16px', backgroundColor: 'white', color: 'black'}} type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
             </div>
             <div>
               <input type="submit" value="Register" />

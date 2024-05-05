@@ -59,11 +59,11 @@ const Login = () => {
           <form onSubmit={onSubmit}>
             <div>
               <label style={{ fontSize: '24px' }}>Username:</label>
-              <input style={{ width: '200px', height: '30px', fontSize: '16px',backgroundColor: 'white' }} type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+              <input style={{ width: '200px', height: '30px', fontSize: '16px',backgroundColor: 'white', color: 'black' }} type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
             </div>
             <div>
               <label style={{ fontSize: '24px' }}>Password:</label>
-              <input style={{ width: '200px', height: '30px', fontSize: '16px',backgroundColor: 'white' }} type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <input style={{ width: '200px', height: '30px', fontSize: '16px',backgroundColor: 'white', color: 'black' }} type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <div>
               <input type="submit" value="Log In" />

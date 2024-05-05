@@ -12,19 +12,18 @@ const partySchema = new mongoose.Schema({
     }],
     chat: [{
         user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
+          type: String,
+          required: true
         },
         message: {
-            type: String,
-            required: true
+          type: String,
+          required: true
         },
         timestamp: {
-            type: Date,
-            default: Date.now
+          type: Date,
+          default: Date.now
         }
-    }],
+      }],
     videoQueue: [{
         id: {
             type: String,

@@ -153,6 +153,15 @@ app.get('/artist-albums', async (req, res) => {
   });
 });
 
+app.get('/token', async (req, res) => {
+  try {
+    const token = await getValidToken();
+    res.json({ token });
+  } catch (error) {
+    res.status(500).json({ error: error.toString() });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

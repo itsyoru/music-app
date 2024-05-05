@@ -14,24 +14,39 @@ const Browse = () => {
     const [tracklist, setTracklist] = useState([]);
     const [kanyeAlbums, setKanyeAlbums] = useState([]);
     const [youtubeVideoId, setYoutubeVideoId] = useState(null);
-
+    const [rapalbums, setRapAlbums] = useState([]);
+    const [popalbums, setPopAlbums] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:3000/artist-albums')
+        fetch('http://localhost:5001/popalbums')
+            .then(response => response.json())
+            .then(data => setPopAlbums(data))
+            .catch(error => console.error('Error:', error));
+    }, []);
+    
+    useEffect(() => {
+        fetch('http://localhost:5001/rapalbums')
+            .then(response => response.json())
+            .then(data => setRapAlbums(data))
+            .catch(error => console.error('Error:', error));
+    }, []);
+
+    useEffect(() => {
+        fetch('http://localhost:5001/artist-albums')
             .then(response => response.json())
             .then(data => setKanyeAlbums(data))
             .catch(error => console.error('Error:', error));
     }, []);
 
     useEffect(() => {
-        fetch('http://localhost:3000/new-releases')
+        fetch('http://localhost:5001/new-releases')
             .then(response => response.json())
             .then(data => setNewReleases(data))
             .catch(error => console.error('Error:', error));
     }, []);
 
     useEffect(() => {
-        fetch('http://localhost:3000/top-ten')
+        fetch('http://localhost:5001/top-ten')
             .then(response => response.json())
             .then(data => setTop10(data))
             .catch(error => console.error('Error:', error));
@@ -108,7 +123,7 @@ const Browse = () => {
         setModalIsOpen(true);
 
         if (album.album_type === "album") {
-            fetch(`http://localhost:3000/albums/${album.id}/tracks`)
+            fetch(`http://localhost:5001/albums/${album.id}/tracks`)
                 .then(response => response.json())
                 .then(data => setTracklist(data))
                 .catch(error => console.error('Error:', error));
@@ -137,6 +152,32 @@ const Browse = () => {
                         <div>
                             <p>{release.name}</p>
                             <p>{release.artists.join(', ')}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            <p style={{ fontWeight: 'bold', fontSize: '30px', marginTop: '60px' }}>Trending in Pop</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                {popalbums.map((album, index) => (
+                    <div key={index} style={{ margin: '10px', width: 'calc(20% - 20px)', overflow: 'hidden' }}>
+                        <img src={album.cover_art} alt={album.name} className="album-cover" onClick={() => openModal(album)} />
+                        <div>
+                            <p>{album.name}</p>
+                            <p>{album.artists.join(', ')}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            <p style={{ fontWeight: 'bold', fontSize: '30px', marginTop: '60px' }}>Hip-Hop Spotlight</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                {rapalbums.map((album, index) => (
+                    <div key={index} style={{ margin: '10px', width: 'calc(20% - 20px)', overflow: 'hidden' }}>
+                        <img src={album.cover_art} alt={album.name} className="album-cover" onClick={() => openModal(album)} />
+                        <div>
+                            <p>{album.name}</p>
+                            <p>{album.artists.join(', ')}</p>
                         </div>
                     </div>
                 ))}

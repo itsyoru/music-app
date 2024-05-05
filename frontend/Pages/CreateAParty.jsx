@@ -80,25 +80,28 @@ function CreateOrJoinAParty() {
         <>
         <Navbar />
 
-        <div style={{ padding: '20px', marginTop: '60px' }}>
-            <form onSubmit={handleCreateParty} style={{ marginBottom: '20px' }}>
-                <input type="text" value={partyNameToCreate} onChange={e => setPartyNameToCreate(e.target.value)} placeholder="Enter party name" required style={{ marginRight: '10px', padding: '10px' }} />
-                <button type="submit" style={{ padding: '10px', backgroundColor: '#4CAF50', color: 'white', border: 'none', cursor: 'pointer' }}>Create Party</button>
-            </form>
-            <form onSubmit={handleJoinParty} style={{ marginBottom: '20px' }}>
-                <input type="text" value={partyNameToJoin} onChange={e => setPartyNameToJoin(e.target.value)} placeholder="Enter party name" required style={{ marginRight: '10px', padding: '10px' }} />
-                <button type="submit" style={{ padding: '10px', backgroundColor: '#008CBA', color: 'white', border: 'none', cursor: 'pointer' }}>Join Party</button>
-            </form>
+        <div style={{ padding: '20px', marginTop: '60px', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <form onSubmit={handleCreateParty}>
+            <input type="text" value={partyNameToCreate} onChange={e => setPartyNameToCreate(e.target.value)} placeholder="Enter party name" required style={{ marginRight: '10px', padding: '10px', backgroundColor: 'white', color: 'black' }} />
+            <button type="submit" style={{ padding: '10px', backgroundColor: '#4CAF50', color: 'white', border: 'none', cursor: 'pointer' }}>Create Party</button>
+        </form>
+        <span>Create a party to start listening, or join a preexisting one.</span>
+        <form onSubmit={handleJoinParty}>
+            <input type="text" value={partyNameToJoin} onChange={e => setPartyNameToJoin(e.target.value)} placeholder="Enter party name" required style={{ marginRight: '10px', padding: '10px', backgroundColor: 'white', color: 'black' }} />
+            <button type="submit" style={{ padding: '10px', backgroundColor: '#008CBA', color: 'white', border: 'none', cursor: 'pointer' }}>Join Party</button>
+        </form>
+    </div>
             <div style={{ border: '1px solid #ccc', boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)', padding: '20px', backgroundColor: '#e3f2fd', borderRadius: '5px' }}>
     <h2 style={{ marginBottom: '20px', textAlign: 'center', color: '#333' }}>Created Parties</h2>
     <ul style={{ listStyleType: 'none', padding: '0' }}>
-        {parties.map((partyName, index) => (
-            <li key={index} style={{ marginBottom: '10px', padding: '10px', backgroundColor: '#f2f2f2', borderRadius: '5px' }}>
-                {partyName}
-                {partyVideos[partyName] && ` - Now Listening... ${partyVideos[partyName].title}`}
-            </li>
-        ))}
-    </ul>
+    {parties.map((partyName, index) => (
+        <li key={index} style={{ marginBottom: '10px', padding: '10px', backgroundColor: '#f2f2f2', borderRadius: '5px' }}>
+            <strong>{partyName}</strong>
+            {partyVideos[partyName] && <><br />Listening now... <strong>{partyVideos[partyName].title}</strong></>}
+        </li>
+    ))}
+</ul>
 </div>
         </div>
         </>

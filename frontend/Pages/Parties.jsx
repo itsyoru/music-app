@@ -30,7 +30,7 @@ function Parties() {
                 axios.post(`http://localhost:5001/party/${partyName}/currentTime`, { currentTime });
             }, 1000);
         } else if (event.data === YouTube.PlayerState.ENDED) {
-            handleVideoEnd(); // call your handleVideoEnd function here
+            handleVideoEnd(); 
         } else {
             clearInterval(intervalRef.current);
         }
@@ -40,14 +40,25 @@ function Parties() {
         const player = event.target;
         setPlayer(player);
 
-        // Seek to the current time when the video is ready
         player.seekTo(currentTime);
     };
 
     const apiKey = 'AIzaSyCjnRfIVkZkci52e3v4AmyEvHvWebfqd84';
 
+    const fetchMessages = async () => {
+        try {
+          const response = await axios.get(`http://localhost:5001/party/${partyName}/chat`);
+          setMessages(response.data);
+        } catch (error) {
+          console.error('Failed to fetch messages:', error);
+        }
+      };
+      
+      useEffect(() => {
+        fetchMessages();
+      }, []);
+
     useEffect(() => {
-        // Fetch the current video and its playback time from the server when the component mounts
         axios.get(`http://localhost:5001/party/${partyName}/currentVideo`)
             .then(response => {
                 setCurrentVideo(response.data.video);
@@ -79,12 +90,16 @@ function Parties() {
     }, []);
 
     const handleVideoEnd = () => {
-        // Remove the current video from the queue
+
         const newQueue = videoQueue.slice(1);
         setVideoQueue(newQueue);
-
-        // Set the next video as the current video
-        setCurrentVideo(newQueue[0]);
+    
+        const nextVideo = newQueue[0];
+        setCurrentVideo(nextVideo);
+    
+        if (player) {
+            player.loadVideoById(nextVideo.id);
+        }
     };
 
     const addVideoToQueue = (video) => {
@@ -113,62 +128,108 @@ function Parties() {
         });
     };
 
+    const extractVideoId = (url) => {
+        const regex = /(youtu\.be\/|watch\?v=)([^&]+)/;
+        const match = url.match(regex);
+        return match ? match[2] : url;
+    }
+    
+    function extractPlaylistId(url) {
+        const regex = /(list=)([^&]+)/;
+        const match = url.match(regex);
+        return match ? match[2] : null;
+    }
+    
     const handleAddVideo = (event) => {
         event.preventDefault();
     
-        // Fetch video details from YouTube API
-        axios.get(`https://www.googleapis.com/youtube/v3/videos?id=${newVideoId}&key=${apiKey}&part=snippet`)
-            .then(response => {
-                if (response.data.items.length > 0) {
-                    const video = {
-                        id: newVideoId,
-                        title: response.data.items[0].snippet.title
-                    };
-                    addVideoToQueue(video);
-                    setNewVideoId(''); // Clear the input field
-                } else {
-                    alert('Video not found');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    };
-
-    const handleNewMessage = () => {
-        const username = localStorage.getItem('username');
-        if (username) {
-            setMessages([...messages, { username, text: newMessage }]);
-            setNewMessage('');
+        const videoId = extractVideoId(newVideoId);
+        const playlistId = extractPlaylistId(newVideoId);
+    
+        if (playlistId) {
+            // Fetch playlist details from YouTube API
+            axios.get(`https://www.googleapis.com/youtube/v3/playlistItems?playlistId=${playlistId}&key=${apiKey}&part=snippet`)
+                .then(response => {
+                    if (response.data.items.length > 0) {
+                        response.data.items.forEach(item => {
+                            const video = {
+                                id: item.snippet.resourceId.videoId,
+                                title: item.snippet.title
+                            };
+                            addVideoToQueue(video);
+                        });
+                        setNewVideoId(''); // Clear the input field
+                    } else {
+                        alert('Playlist not found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         } else {
-            alert('You must be logged in to send a message.');
+            // Fetch video details from YouTube API
+            axios.get(`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet`)
+                .then(response => {
+                    if (response.data.items.length > 0) {
+                        const video = {
+                            id: videoId,
+                            title: response.data.items[0].snippet.title
+                        };
+                        addVideoToQueue(video);
+                        setNewVideoId(''); // Clear the input field
+                    } else {
+                        alert('Video not found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
     };
+
+    const handleNewMessage = async () => {
+        const username = localStorage.getItem('username');
+        if (username) {
+          try {
+            await axios.post(`http://localhost:5001/party/${partyName}/chat`, {
+              user: username,
+              message: newMessage,
+            });
+            fetchMessages(); 
+            setNewMessage('');
+          } catch (error) {
+            console.error('Failed to send message:', error);
+          }
+        } else {
+          alert('You must be logged in to send a message.');
+        }
+      };
 
     return (
 
         <>
         <Navbar />
 
-        <div className='party-section'>
-            <h1>Party Room</h1>
-            <h2>Now Playing: {currentVideo?.title}</h2>
-            {currentVideo && (
-                 <YouTube
-                 videoId={currentVideo.id}
-                 opts={{ playerVars: { autoplay: 1 } }}
-                 onEnd={handleVideoEnd}
-                 onStateChange={handleStateChange}
-                 onReady={handleReady}
-             />
-            )}            <form onSubmit={handleAddVideo} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
+        <div className='party-section' style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginLeft: '50px' }}>
+    <div>
+        <h1>Party Room</h1>
+        <h2>Now Playing: {currentVideo?.title}</h2>
+        {currentVideo && (
+            <YouTube
+                videoId={currentVideo.id}
+                opts={{ playerVars: { autoplay: 1 } }}
+                onEnd={handleVideoEnd}
+                onStateChange={handleStateChange}
+                onReady={handleReady}
+            />
+        )}            <form onSubmit={handleAddVideo} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
             <input
                 type="text"
                 value={newVideoId}
                 onChange={e => setNewVideoId(e.target.value)}
-                placeholder="Enter YouTube video ID"
+                placeholder="Enter YouTube link!"
                 required
-                style={{ margin: '10px 0', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+                style={{ margin: '10px 0', padding: '10px', borderRadius: '5px', border: '1px solid #ccc', backgroundColor: 'white', color: 'black'}}
             />
             <button type="submit" style={{ padding: '10px 20px', backgroundColor: '#007BFF', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Add to Queue</button>
         </form>
@@ -178,19 +239,38 @@ function Parties() {
                 <li key={index}>{video.title}</li>
             ))}
         </ul>
-        <div className="chatbox" style={{ border: '1px solid #ccc', padding: '10px', borderRadius: '5px' }}>
-            {messages.map((message, index) => (
-                <p key={index}><strong>{message.username}:</strong> {message.text}</p>
-            ))}
-            <input
-                value={newMessage}
-                onChange={e => setNewMessage(e.target.value)}
-                placeholder="Type your message here"
-                style={{ margin: '10px 0', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
-            />
-            <button onClick={handleNewMessage} style={{ padding: '10px 20px', backgroundColor: '#007BFF', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Send</button>
         </div>
+        <div className="chatbox" style={{ 
+    border: '1px solid #ccc', 
+    padding: '10px', 
+    borderRadius: '5px', 
+    width: '300px', 
+    maxHeight: '350px', 
+    overflowY: 'auto',
+    marginTop: '175px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+}}>
+    <div>
+    {messages.map((message, index) => (
+  <div key={index}>
+    <strong>{message.user}: </strong>
+    <span>{message.message}</span>
+  </div>
+))}
     </div>
+    <div>
+        <input
+            value={newMessage}
+            onChange={e => setNewMessage(e.target.value)}
+            placeholder="Type your message!"
+            style={{ margin: '10px 0', padding: '10px', borderRadius: '5px', border: '1px solid #ccc', backgroundColor: 'white', color: 'black'}}
+        />
+        <button onClick={handleNewMessage} style={{ padding: '10px 20px', backgroundColor: '#007BFF', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Send</button>
+    </div>
+</div>
+</div>
     </>
 );
 }
