@@ -180,7 +180,7 @@ function Profile() {
                 <div style={{ width: '50%' }}>
                     <h2>Recent Activity...</h2>
                     <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '20px' }}>
-                        {reviews.slice(-5).map((review, index) => (
+                        {reviews.slice(-6).map((review, index) => (
                             <div key={index} style={{ margin: '10px', width: 'calc(30% - 20px)', overflow: 'hidden' }}>                                <img src={review.albumCoverArt} alt={review.albumName} className="album-cover" />
                                 <div>
                                     <p style={{
@@ -208,7 +208,7 @@ function Profile() {
                     </div>
                     <h2>Favorite Albums...</h2>
                     <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '20px' }}>
-                        {favoriteAlbums.slice(-5).map((album, index) => (
+                        {favoriteAlbums.slice(-6).map((album, index) => (
                             <div key={index} style={{ margin: '10px', width: 'calc(30% - 20px)', overflow: 'hidden' }}>                                <img src={album.albumCoverArt} alt={album.albumName} className="album-cover" />
                                 <div>
                                     <p style={{

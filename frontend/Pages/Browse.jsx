@@ -183,6 +183,7 @@ const Browse = () => {
                 ))}
             </div>
 
+            {/*
             <p style={{ fontWeight: 'bold', fontSize: '30px', marginTop: '60px' }}>Top 10</p>
             <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                 {top10.slice(0, 10).map((release, index) => (
@@ -195,6 +196,7 @@ const Browse = () => {
                     </div>
                 ))}
             </div>
+            */}
 
             <p style={{ fontWeight: 'bold', fontSize: '30px', marginTop: '60px' }}>Kanye West's Albums</p>
             <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
