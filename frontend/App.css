@@ -88,8 +88,6 @@ nav {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-
-  
 }
 
 .image-container {
@@ -103,7 +101,6 @@ nav {
 }
 
 .form-container {
- 
   width: 40%;
   padding: 10px;
   display: flex;
@@ -118,8 +115,8 @@ nav {
 .form-container input[type="email"],
 .form-container input[type="password"],
 .form-container input[type="submit"] {
-  width: 100%; 
-  height: 50px; 
+  width: 100%;
+  height: 50px;
   margin-bottom: 20px; /* Add space between inputs */
   padding: 0 10px; /* Add padding */
   font-size: 16px; /* Adjust font size */
@@ -188,10 +185,11 @@ nav {
   z-index: 0;
 }
 
-.logo img{
+.logo img {
   width: 100px;
 }
 
-.profile-details, .party-section {
+.profile-details,
+.party-section {
   margin-top: 60px;
 }
